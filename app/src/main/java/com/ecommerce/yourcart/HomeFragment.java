@@ -5,13 +5,18 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +40,15 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
+
+    ///////// Banner Slider
+    private ViewPager bannerSliderViewPager;
+    private List<SliderModel> sliderModelList;
+    private int currentPage = 2;
+    private Timer timer;
+    final private long DELAY_TIME = 3000;
+    final private long PERIOD_TIME = 3000;
+    ///////// Banner Slider
 
     /**
      * Use this factory method to create a new instance of
@@ -90,6 +104,122 @@ public class HomeFragment extends Fragment {
         categoryRecyclerView.setAdapter(categoryAdapter);
         categoryAdapter.notifyDataSetChanged();
 
+        /////// Banner Slider
+
+        bannerSliderViewPager = view.findViewById(R.id.banner_slider_view_pager);
+
+        sliderModelList = new ArrayList<SliderModel>();
+
+        sliderModelList.add(new SliderModel(R.mipmap.userplaceholder));
+        sliderModelList.add(new SliderModel(R.mipmap.wishlisticon));
+
+        sliderModelList.add(new SliderModel(R.mipmap.bellicon));
+        sliderModelList.add(new SliderModel(R.mipmap.cartblack));
+        sliderModelList.add(new SliderModel(R.mipmap.cartwhite));
+        sliderModelList.add(new SliderModel(R.mipmap.categoryhome));
+        sliderModelList.add(new SliderModel(R.mipmap.closecross));
+        sliderModelList.add(new SliderModel(R.mipmap.forgotpassword));
+        sliderModelList.add(new SliderModel(R.mipmap.homeicon));
+        sliderModelList.add(new SliderModel(R.mipmap.ic_launcher));
+        sliderModelList.add(new SliderModel(R.mipmap.ic_launcher_round));
+        sliderModelList.add(new SliderModel(R.mipmap.lanchersplash));
+        sliderModelList.add(new SliderModel(R.mipmap.launchermain));
+        sliderModelList.add(new SliderModel(R.mipmap.launchersplash));
+        sliderModelList.add(new SliderModel(R.mipmap.mainlogo));
+        sliderModelList.add(new SliderModel(R.mipmap.rewardsicon));
+        sliderModelList.add(new SliderModel(R.mipmap.searchicon));
+        sliderModelList.add(new SliderModel(R.mipmap.shopingbag));
+        sliderModelList.add(new SliderModel(R.mipmap.signouticon));
+        sliderModelList.add(new SliderModel(R.mipmap.slider1));
+        sliderModelList.add(new SliderModel(R.mipmap.slider2));
+        sliderModelList.add(new SliderModel(R.mipmap.slider3));
+        sliderModelList.add(new SliderModel(R.mipmap.splashlogo));
+        sliderModelList.add(new SliderModel(R.mipmap.usericon));
+        sliderModelList.add(new SliderModel(R.mipmap.userplaceholder));
+        sliderModelList.add(new SliderModel(R.mipmap.wishlisticon));
+
+        sliderModelList.add(new SliderModel(R.mipmap.bellicon));
+        sliderModelList.add(new SliderModel(R.mipmap.cartblack));
+
+        SliderAdapter sliderAdapter = new SliderAdapter(sliderModelList);
+        bannerSliderViewPager.setClipToPadding(false);
+        bannerSliderViewPager.setPageMargin(20);
+
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentPage = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE){
+                    pageLooper();
+                }
+            }
+        };
+        bannerSliderViewPager.addOnPageChangeListener(onPageChangeListener);
+
+        startBannerSlideShow();
+
+        bannerSliderViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                pageLooper();
+                stopBannerSlideShow();
+                if (event.getAction() == MotionEvent.ACTION_UP){
+                    startBannerSlideShow();
+                }
+                return false;
+            }
+        });
+
+        /////// Banner Slider
+
         return view;
     }
+
+    /////// Banner Slider
+
+    private void pageLooper(){
+        if (currentPage == sliderModelList.size() - 2){
+            currentPage = 2;
+            bannerSliderViewPager.setCurrentItem(currentPage, false);
+        }
+        if (currentPage == 1){
+            currentPage = sliderModelList.size() - 3;
+            bannerSliderViewPager.setCurrentItem(currentPage, false);
+        }
+    }
+
+    private void startBannerSlideShow(){
+        Handler handler = new Handler();
+        Runnable update = new Runnable() {
+            @Override
+            public void run() {
+                if (currentPage >= sliderModelList.size()){
+                    currentPage = 1;
+                }
+                bannerSliderViewPager.setCurrentItem(currentPage++,true);
+            }
+        };
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(update);
+            }
+        },DELAY_TIME,PERIOD_TIME);
+    }
+
+    private void stopBannerSlideShow(){
+        timer.cancel();
+    }
+    /////// Banner Slider
+
 }
