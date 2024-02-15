@@ -1,17 +1,21 @@
 package com.ecommerce.yourcart;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,11 @@ public class HomeFragment extends Fragment {
     final private long DELAY_TIME = 3000;
     final private long PERIOD_TIME = 3000;
     ///////// Banner Slider
+
+    //////// Strip Ad
+    private ImageView stripAdImage;
+    private ConstraintLayout stripAdContainer;
+    //////// Strip Ad
 
     /**
      * Use this factory method to create a new instance of
@@ -105,45 +114,26 @@ public class HomeFragment extends Fragment {
         categoryAdapter.notifyDataSetChanged();
 
         /////// Banner Slider
-
         bannerSliderViewPager = view.findViewById(R.id.banner_slider_view_pager);
 
         sliderModelList = new ArrayList<SliderModel>();
 
-        sliderModelList.add(new SliderModel(R.mipmap.userplaceholder));
-        sliderModelList.add(new SliderModel(R.mipmap.wishlisticon));
+        sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
+        sliderModelList.add(new SliderModel(R.mipmap.slider3, "#077AE4"));
 
-        sliderModelList.add(new SliderModel(R.mipmap.bellicon));
-        sliderModelList.add(new SliderModel(R.mipmap.cartblack));
-        sliderModelList.add(new SliderModel(R.mipmap.cartwhite));
-        sliderModelList.add(new SliderModel(R.mipmap.categoryhome));
-        sliderModelList.add(new SliderModel(R.mipmap.closecross));
-        sliderModelList.add(new SliderModel(R.mipmap.forgotpassword));
-        sliderModelList.add(new SliderModel(R.mipmap.homeicon));
-        sliderModelList.add(new SliderModel(R.mipmap.ic_launcher));
-        sliderModelList.add(new SliderModel(R.mipmap.ic_launcher_round));
-        sliderModelList.add(new SliderModel(R.mipmap.lanchersplash));
-        sliderModelList.add(new SliderModel(R.mipmap.launchermain));
-        sliderModelList.add(new SliderModel(R.mipmap.launchersplash));
-        sliderModelList.add(new SliderModel(R.mipmap.mainlogo));
-        sliderModelList.add(new SliderModel(R.mipmap.rewardsicon));
-        sliderModelList.add(new SliderModel(R.mipmap.searchicon));
-        sliderModelList.add(new SliderModel(R.mipmap.shopingbag));
-        sliderModelList.add(new SliderModel(R.mipmap.signouticon));
-        sliderModelList.add(new SliderModel(R.mipmap.slider1));
-        sliderModelList.add(new SliderModel(R.mipmap.slider2));
-        sliderModelList.add(new SliderModel(R.mipmap.slider3));
-        sliderModelList.add(new SliderModel(R.mipmap.splashlogo));
-        sliderModelList.add(new SliderModel(R.mipmap.usericon));
-        sliderModelList.add(new SliderModel(R.mipmap.userplaceholder));
-        sliderModelList.add(new SliderModel(R.mipmap.wishlisticon));
+        sliderModelList.add(new SliderModel(R.mipmap.slider1, "#077AE4"));
+        sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
+        sliderModelList.add(new SliderModel(R.mipmap.slider3, "#077AE4"));
 
-        sliderModelList.add(new SliderModel(R.mipmap.bellicon));
-        sliderModelList.add(new SliderModel(R.mipmap.cartblack));
+        sliderModelList.add(new SliderModel(R.mipmap.slider1, "#077AE4"));
+        sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
 
         SliderAdapter sliderAdapter = new SliderAdapter(sliderModelList);
+        bannerSliderViewPager.setAdapter(sliderAdapter);
         bannerSliderViewPager.setClipToPadding(false);
         bannerSliderViewPager.setPageMargin(20);
+
+        bannerSliderViewPager.setCurrentItem(currentPage);
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -178,8 +168,15 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
-
         /////// Banner Slider
+
+        ////// Strip Ad
+        stripAdImage = view.findViewById(R.id.strip_ad_image);
+        stripAdContainer = view.findViewById(R.id.strip_ad_container);
+
+        stripAdImage.setImageResource(R.mipmap.slider3);
+        stripAdContainer.setBackgroundColor(Color.parseColor("#000000"));
+        ////// Strip Ad
 
         return view;
     }

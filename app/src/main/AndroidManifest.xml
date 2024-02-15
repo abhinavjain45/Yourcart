@@ -18,7 +18,8 @@
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Yourcart.NoActionBar" />
+            android:theme="@style/Theme.Yourcart.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".RegisterActivity"
             android:exported="false"

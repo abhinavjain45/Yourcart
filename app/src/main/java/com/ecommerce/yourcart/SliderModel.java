@@ -11,7 +11,18 @@ public class SliderModel {
         this.banner = banner;
     }
 
-    public SliderModel(int banner) {
-        this.banner = banner;
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public SliderModel(int banner, String backgroundColor) {
+        this.banner = banner;
+        this.backgroundColor = backgroundColor;
+    }
+
+    private String backgroundColor;
 }
