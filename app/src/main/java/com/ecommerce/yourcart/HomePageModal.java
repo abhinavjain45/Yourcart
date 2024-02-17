@@ -1,10 +1,17 @@
 package com.ecommerce.yourcart;
 
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class HomePageModal {
     public static final int BANNER_SLIDER = 0;
     public static final int STRIP_AD_BANNER = 1;
+    public static final int HORIZONTAL_PRODUCT_VIEW = 2;
+    public static final int GRID_PRODUCT_VIEW = 3;
     private int type;
 
     ////// Banner Slider
@@ -57,4 +64,27 @@ public class HomePageModal {
         this.backgroundColor = backgroundColor;
     }
     ///// Strip Ad Banner
+
+    ///// Horizontal Product & Grid Product
+    private String title;
+    private List<HorizontalProductScrollModal> horizontalProductScrollModalList;
+
+    public HomePageModal(int type, String title, List<HorizontalProductScrollModal> horizontalProductScrollModalList) {
+        this.type = type;
+        this.title = title;
+        this.horizontalProductScrollModalList = horizontalProductScrollModalList;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public List<HorizontalProductScrollModal> getHorizontalProductScrollModalList() {
+        return horizontalProductScrollModalList;
+    }
+    public void setHorizontalProductScrollModalList(List<HorizontalProductScrollModal> horizontalProductScrollModalList) {
+        this.horizontalProductScrollModalList = horizontalProductScrollModalList;
+    }
+    ///// Horizontal Product & Grid Product
 }

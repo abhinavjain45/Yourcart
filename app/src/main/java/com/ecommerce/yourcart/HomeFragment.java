@@ -228,10 +228,8 @@ public class HomeFragment extends Fragment {
         List<HomePageModal> homePageModalList = new ArrayList<>();
         homePageModalList.add(new HomePageModal(0, sliderModelList));
         homePageModalList.add(new HomePageModal(1, R.mipmap.slider3, "#000000"));
-        homePageModalList.add(new HomePageModal(0, sliderModelList));
-        homePageModalList.add(new HomePageModal(1, R.mipmap.slider2, "#00ffff"));
-        homePageModalList.add(new HomePageModal(0, sliderModelList));
-        homePageModalList.add(new HomePageModal(1, R.mipmap.slider1, "#d54d56"));
+        homePageModalList.add(new HomePageModal(2, "Deals of the Day", horizontalProductScrollModalList));
+        homePageModalList.add(new HomePageModal(3, "#trending", horizontalProductScrollModalList));
 
         HomePageAdapter adapter = new HomePageAdapter(homePageModalList);
         testing.setAdapter(adapter);
