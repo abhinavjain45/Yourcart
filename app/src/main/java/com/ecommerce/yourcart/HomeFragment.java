@@ -8,14 +8,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,12 @@ public class HomeFragment extends Fragment {
     private ImageView stripAdImage;
     private ConstraintLayout stripAdContainer;
     //////// Strip Ad
+
+    /////// Horizontal Product Layout
+    private TextView horizontalLayoutTitle;
+    private Button horizontalLayoutViewAllButton;
+    private RecyclerView horizontalRecyclerView;
+    /////// Horizontal Product Layout
 
     /**
      * Use this factory method to create a new instance of
@@ -177,6 +185,58 @@ public class HomeFragment extends Fragment {
         stripAdImage.setImageResource(R.mipmap.slider3);
         stripAdContainer.setBackgroundColor(Color.parseColor("#000000"));
         ////// Strip Ad
+
+        /////// Horizontal Product Layout
+        horizontalLayoutTitle = view.findViewById(R.id.horizontal_scroll_layout_title);
+        horizontalLayoutViewAllButton = view.findViewById(R.id.horizontal_scroll_view_all_button);
+        horizontalRecyclerView = view.findViewById(R.id.horizontal_scroll_layout_recycler_view);
+
+        List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
+
+        HorizontalProductScrollAdapter horizontalProductScrollAdapter = new HorizontalProductScrollAdapter(horizontalProductScrollModalList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        horizontalRecyclerView.setLayoutManager(linearLayoutManager);
+
+        horizontalRecyclerView.setAdapter(horizontalProductScrollAdapter);
+        horizontalProductScrollAdapter.notifyDataSetChanged();
+
+        /////// Horizontal Product Layout
+
+        /////// Grid Product Layout
+        TextView gridLayoutTitle = view.findViewById(R.id.grid_product_layout_title);
+        Button gridLayoutViewAllButton = view.findViewById(R.id.grid_product_layout_view_all_button);
+        GridView gridView = view.findViewById(R.id.grid_product_layout_grid_view);
+
+        gridView.setAdapter(new GridProductLayoutAdapter(horizontalProductScrollModalList));
+        /////// Grid Product Layout
+
+        /////////////////////////////////////////
+        RecyclerView testing = view.findViewById(R.id.testing);
+        LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
+        testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        testing.setLayoutManager(testingLayoutManager);
+
+        List<HomePageModal> homePageModalList = new ArrayList<>();
+        homePageModalList.add(new HomePageModal(0, sliderModelList));
+        homePageModalList.add(new HomePageModal(1, R.mipmap.slider3, "#000000"));
+        homePageModalList.add(new HomePageModal(0, sliderModelList));
+        homePageModalList.add(new HomePageModal(1, R.mipmap.slider2, "#00ffff"));
+        homePageModalList.add(new HomePageModal(0, sliderModelList));
+        homePageModalList.add(new HomePageModal(1, R.mipmap.slider1, "#d54d56"));
+
+        HomePageAdapter adapter = new HomePageAdapter(homePageModalList);
+        testing.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        /////////////////////////////////////////
 
         return view;
     }
