@@ -1,5 +1,6 @@
 package com.ecommerce.yourcart;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,14 @@ public class HorizontalProductScrollAdapter extends RecyclerView.Adapter<Horizon
             productTitle = itemView.findViewById(R.id.horizontal_scroll_product_title);
             productSpecification = itemView.findViewById(R.id.horizontal_scroll_product_specification);
             productPrice = itemView.findViewById(R.id.horizontal_scroll_product_price);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent productDetailsIntent = new Intent(itemView.getContext(), ProductDetailsActivity.class);
+                    itemView.getContext().startActivity(productDetailsIntent);
+                }
+            });
         }
 
         private void setProductImage(int resource) {
