@@ -11,6 +11,7 @@
         android:id="@+id/product_details_tab_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         app:tabTextColor="#9f9f9f"
         app:tabSelectedTextColor="@color/primary"
         app:tabIndicatorColor="@color/primary"
