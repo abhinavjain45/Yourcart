@@ -3,6 +3,7 @@ package com.ecommerce.yourcart;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -23,6 +24,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TabLayout viewPagerIndicator;
     private FloatingActionButton addToWishlistButton;
     private static Boolean ALREADY_ADDED_TO_WISHLIST = false;
+    private ViewPager productDetailsViewPager;
+    private TabLayout productDetailsTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productImagesViewPager = findViewById(R.id.product_images_view_pager);
         viewPagerIndicator = findViewById(R.id.view_pager_indicator);
         addToWishlistButton = findViewById(R.id.add_to_wishlist_button);
+        productDetailsViewPager = findViewById(R.id.product_details_view_pager);
+        productDetailsTabLayout = findViewById(R.id.product_details_tab_layout);
 
         List<Integer> productImages = new ArrayList<>();
         productImages.add(R.mipmap.product1);
@@ -62,6 +67,26 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     ALREADY_ADDED_TO_WISHLIST = true;
                     addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
                 }
+            }
+        });
+
+        productDetailsViewPager.setAdapter(new ProductDetailsAdapter(getSupportFragmentManager(),productDetailsTabLayout.getTabCount()));
+
+        productDetailsViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(productDetailsTabLayout));
+        productDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                productDetailsViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
     }

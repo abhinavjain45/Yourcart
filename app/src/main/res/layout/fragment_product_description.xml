@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProductDescriptionFragment">
+
+    <TextView
+        android:id="@+id/tv_product_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/black"
+        android:text="As night fell, the city came alive with a vibrant energy all its own. Neon lights flickered to life, illuminating the bustling streets below. Music poured from open doorways, mingling with the chatter of pedestrians and the occasional honk of a passing car. Restaurants overflowed with patrons, the tantalizing aroma of exotic cuisines drawing in hungry diners from far and wide. In the heart of the city, skyscrapers towered overhead, their sleek facades shimmering in the glow of the moon. It was a symphony of sights and sounds, a testament to the endless possibilities that awaited in the urban jungle." />
+</FrameLayout>
