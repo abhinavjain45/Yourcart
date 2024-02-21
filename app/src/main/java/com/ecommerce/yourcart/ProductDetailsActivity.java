@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private static Boolean ALREADY_ADDED_TO_WISHLIST = false;
     private ViewPager productDetailsViewPager;
     private TabLayout productDetailsTabLayout;
+
+    /////rating layout
+    private LinearLayout rateNowContainer;
+    /////rating layout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,31 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             }
         });
+
+        ///////rating layout
+        rateNowContainer = findViewById(R.id.rate_now_container);
+        for (int x = 0; x < rateNowContainer.getChildCount(); x++){
+            final int starPosition = x;
+            rateNowContainer.getChildAt(x).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setRating(starPosition);
+                }
+            });
+        }
+        //////rating layout
+
+
+    }
+
+    private void setRating(int starPosition) {
+        for (int x = 0; x < rateNowContainer.getChildCount(); x++){
+            ImageView starBtn = (ImageView)rateNowContainer.getChildAt(x);
+            starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#9f9f9f")));
+            if (x <= starPosition){
+                starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FFC107")));
+            }
+        }
     }
 
     @Override
