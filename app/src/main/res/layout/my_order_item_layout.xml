@@ -16,7 +16,7 @@
         android:layout_marginTop="16dp"
         android:text="Product Title Here"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

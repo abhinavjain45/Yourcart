@@ -1,5 +1,6 @@
 package com.ecommerce.yourcart;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -60,6 +61,14 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             myOrderStatusIndicator = itemView.findViewById(R.id.order_status_indicator);
             myOrderStatus = itemView.findViewById(R.id.tv_order_status);
             rateNowContainer = itemView.findViewById(R.id.rate_now_container);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent orderDetailsIntent = new Intent(itemView.getContext(), OrderDetailsActivity.class);
+                    itemView.getContext().startActivity(orderDetailsIntent);
+                }
+            });
         }
 
         private void setOrderData(int resource, String title, String orderStatusText, int rating) {
