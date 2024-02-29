@@ -63,14 +63,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (ALREADY_ADDED_TO_WISHLIST) {
             addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
         } else {
-            addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9f9f9f")));
+            addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("@color/colorGrey")));
         }
         addToWishlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ALREADY_ADDED_TO_WISHLIST) {
                     ALREADY_ADDED_TO_WISHLIST = false;
-                    addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#9f9f9f")));
+                    addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("@color/colorGrey")));
                 } else {
                     ALREADY_ADDED_TO_WISHLIST = true;
                     addToWishlistButton.setSupportImageTintList(ColorStateList.valueOf(Color.parseColor("#ff0000")));
@@ -117,7 +117,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void setRating(int starPosition) {
         for (int x = 0; x < rateNowContainer.getChildCount(); x++){
             ImageView starBtn = (ImageView)rateNowContainer.getChildAt(x);
-            starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#9f9f9f")));
+            starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("@color/colorGrey")));
             if (x <= starPosition){
                 starBtn.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FFC107")));
             }

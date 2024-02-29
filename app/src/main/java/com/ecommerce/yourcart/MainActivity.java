@@ -35,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int HOME_FRAGMENT = 0;
     private static final int CART_FRAGMENT = 1;
     private static final int ORDER_FRAGMENT = 2;
+    private static final int WISHLIST_FRAGMENT = 3;
+    private static final int REWARDS_FRAGMENT = 4;
+    private static final int MY_ACCOUNT_FRAGMENT = 5;
     private ImageView actionBarLogo;
 
     @Override
@@ -64,7 +67,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (currentFragment == HOME_FRAGMENT) {
+                super.onBackPressed();
+            } else {
+                actionBarLogo.setVisibility(View.VISIBLE);
+                invalidateOptionsMenu();
+                setFragment(new HomeFragment(), HOME_FRAGMENT);
+                navigationView.getMenu().getItem(0).setChecked(true);
+            }
         }
     }
 
@@ -117,13 +127,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_my_orders) {
             goToFragment("My Orders", new MyOrdersFragment(), ORDER_FRAGMENT);
         } else if (id == R.id.nav_my_rewards) {
-
+            goToFragment("Rewards", new RewardsFragment(), REWARDS_FRAGMENT);
         } else if (id == R.id.nav_my_shopping_cart) {
             goToFragment("Shopping Cart", new MyCartFragment(), CART_FRAGMENT);
         } else if (id == R.id.nav_my_wishlist) {
-
+            goToFragment("Wishlist", new WishlistFragment(), WISHLIST_FRAGMENT);
         } else if (id == R.id.nav_my_account) {
-
+            goToFragment("My Account", new MyAccountFragment(), MY_ACCOUNT_FRAGMENT);
         } else if (id == R.id.nav_sign_out) {
 
         }

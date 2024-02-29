@@ -94,7 +94,7 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:src="@drawable/star_icon"
-            android:tint="#9f9f9f" />
+            android:tint="@color/colorGrey" />
 
         <ImageView
             android:id="@+id/rating_star2"
@@ -104,7 +104,7 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:src="@drawable/star_icon"
-            android:tint="#9f9f9f" />
+            android:tint="@color/colorGrey" />
 
         <ImageView
             android:id="@+id/rating_star3"
@@ -114,7 +114,7 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:src="@drawable/star_icon"
-            android:tint="#9f9f9f" />
+            android:tint="@color/colorGrey" />
 
         <ImageView
             android:id="@+id/rating_star4"
@@ -124,7 +124,7 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:src="@drawable/star_icon"
-            android:tint="#9f9f9f" />
+            android:tint="@color/colorGrey" />
 
         <ImageView
             android:id="@+id/rating_star5"
@@ -134,6 +134,6 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:src="@drawable/star_icon"
-            android:tint="#9f9f9f" />
+            android:tint="@color/colorGrey" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
