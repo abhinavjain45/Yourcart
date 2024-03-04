@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Yourcart"
         tools:targetApi="31">
         <activity
+            android:name=".AddAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeliveryActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrderDetailsActivity"
             android:exported="false" />
         <activity
