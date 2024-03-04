@@ -119,7 +119,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         buyNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent deliveryIntent = new Intent(ProductDetailsActivity.this, AddAddressActivity.class);
+                Intent deliveryIntent = new Intent(ProductDetailsActivity.this, DeliveryActivity.class);
                 startActivity(deliveryIntent);
             }
         });
