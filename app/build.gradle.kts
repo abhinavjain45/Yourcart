@@ -50,4 +50,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.firebase:firebase-firestore:24.10.2")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("androidx.gridlayout:gridlayout:1.0.0")
 }
