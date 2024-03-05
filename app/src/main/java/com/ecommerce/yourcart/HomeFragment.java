@@ -3,6 +3,7 @@ package com.ecommerce.yourcart;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,13 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +55,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
     private RecyclerView testing;
+    private List<CategoryModal> categoryModalList;
+    private FirebaseFirestore firebaseFirestore;
 
     /**
      * Use this factory method to create a new instance of
@@ -86,21 +96,27 @@ public class HomeFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         categoryRecyclerView.setLayoutManager(layoutManager);
 
-        final List<CategoryModal> categoryModalList = new ArrayList<CategoryModal>();
-        categoryModalList.add(new CategoryModal("link", "Home"));
-        categoryModalList.add(new CategoryModal("link", "Electronics"));
-        categoryModalList.add(new CategoryModal("link", "Appliances"));
-        categoryModalList.add(new CategoryModal("link", "Furniture"));
-        categoryModalList.add(new CategoryModal("link", "Fashion"));
-        categoryModalList.add(new CategoryModal("link", "Toys"));
-        categoryModalList.add(new CategoryModal("link", "Sports"));
-        categoryModalList.add(new CategoryModal("link", "Wall Arts"));
-        categoryModalList.add(new CategoryModal("link", "Books"));
-        categoryModalList.add(new CategoryModal("link", "Footwear"));
+        categoryModalList = new ArrayList<CategoryModal>();
 
         categoryAdapter = new CategoryAdapter(categoryModalList);
         categoryRecyclerView.setAdapter(categoryAdapter);
-        categoryAdapter.notifyDataSetChanged();
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("CATEGORIES").orderBy("index").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                categoryModalList.add(new CategoryModal(documentSnapshot.get("categoryIcon").toString(), documentSnapshot.get("categoryName").toString()));
+                            }
+                            categoryAdapter.notifyDataSetChanged();
+                        } else {
+                            String error = task.getException().getMessage();
+                            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         /////// Banner Slider
         List<SliderModel> sliderModelList = new ArrayList<SliderModel>();
