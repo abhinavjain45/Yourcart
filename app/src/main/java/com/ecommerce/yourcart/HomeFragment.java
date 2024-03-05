@@ -104,20 +104,21 @@ public class HomeFragment extends Fragment {
 
         /////// Banner Slider
         List<SliderModel> sliderModelList = new ArrayList<SliderModel>();
-
-        sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
-        sliderModelList.add(new SliderModel(R.mipmap.slider3, "#077AE4"));
-
         sliderModelList.add(new SliderModel(R.mipmap.slider1, "#077AE4"));
         sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
         sliderModelList.add(new SliderModel(R.mipmap.slider3, "#077AE4"));
-
-        sliderModelList.add(new SliderModel(R.mipmap.slider1, "#077AE4"));
-        sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
         /////// Banner Slider
 
         /////// Horizontal Product Layout
         List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
+        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
         horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
         horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
         horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
@@ -139,6 +140,8 @@ public class HomeFragment extends Fragment {
         homePageModalList.add(new HomePageModal(1, R.mipmap.slider3, "#000000"));
         homePageModalList.add(new HomePageModal(2, "Deals of the Day", horizontalProductScrollModalList));
         homePageModalList.add(new HomePageModal(3, "#trending", horizontalProductScrollModalList));
+        homePageModalList.add(new HomePageModal(2, "Latest This Week", horizontalProductScrollModalList));
+        homePageModalList.add(new HomePageModal(3, "#fashion_week", horizontalProductScrollModalList));
 
         HomePageAdapter adapter = new HomePageAdapter(homePageModalList);
         testing.setAdapter(adapter);

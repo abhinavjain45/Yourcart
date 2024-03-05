@@ -1,5 +1,6 @@
 package com.ecommerce.yourcart;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,11 @@ import java.util.List;
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHolder> {
 
     private List<WishlistModal> wishlistModalList;
+    private Boolean wishlist;
 
-    public WishlistAdapter(List<WishlistModal> wishlistModalList) {
+    public WishlistAdapter(List<WishlistModal> wishlistModalList, Boolean wishlist) {
         this.wishlistModalList = wishlistModalList;
+        this.wishlist = wishlist;
     }
 
     @NonNull
@@ -96,10 +99,24 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             wishlistProductPrice.setText(displayPrice);
             wishlistCuttedPrice.setText(displayCuttedPrice);
             paymentMethodAvailable.setText(paymentMethod);
+
+            if (wishlist) {
+                wishlistItemDeleteButton.setVisibility(View.VISIBLE);
+            } else {
+                wishlistItemDeleteButton.setVisibility(View.GONE);
+            }
             wishlistItemDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(itemView.getContext(), "Item Removed Successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent productDetailsIntent = new Intent(itemView.getContext(), ProductDetailsActivity.class);
+                    itemView.getContext().startActivity(productDetailsIntent);
                 }
             });
         }

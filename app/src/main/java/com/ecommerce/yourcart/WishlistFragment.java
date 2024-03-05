@@ -78,7 +78,7 @@ public class WishlistFragment extends Fragment {
         wishlistModalList.add(new WishlistModal(R.mipmap.product2, "Product Title Here", 1, "1.8", 15, "Rs. 4,999/-", "Rs. 9,999/-", "Cash on Delivery"));
         wishlistModalList.add(new WishlistModal(R.mipmap.product3, "Product Title Here", 0, "3.7", 187, "Rs. 9,999/-", "Rs. 19,999/-", "Cash on Delivery"));
 
-        WishlistAdapter wishlistAdapter = new WishlistAdapter(wishlistModalList);
+        WishlistAdapter wishlistAdapter = new WishlistAdapter(wishlistModalList, true);
         wishlistRecyclerView.setAdapter(wishlistAdapter);
         wishlistAdapter.notifyDataSetChanged();
 

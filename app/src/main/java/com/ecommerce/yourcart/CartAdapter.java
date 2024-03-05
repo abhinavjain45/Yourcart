@@ -1,8 +1,11 @@
 package com.ecommerce.yourcart;
 
+import android.app.Dialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -128,6 +131,35 @@ public class CartAdapter extends RecyclerView.Adapter {
             } else {
                 offersApplied.setVisibility(View.INVISIBLE);
             }
+            productQuantity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog qtyDialog = new Dialog(itemView.getContext());
+                    qtyDialog.setContentView(R.layout.quantity_dialog);
+                    qtyDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    qtyDialog.setCancelable(false);
+
+                    EditText quantityNumber = qtyDialog.findViewById(R.id.quantity_dialog_number);
+                    Button qtyDialogCancelButton = qtyDialog.findViewById(R.id.qty_dialog_cancel_button);
+                    Button qtyDialogContinueButton = qtyDialog.findViewById(R.id.qty_dialog_continue_button);
+
+                    qtyDialogCancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            qtyDialog.dismiss();
+                        }
+                    });
+
+                    qtyDialogContinueButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            productQuantity.setText("Qty: " + quantityNumber.getText());
+                            qtyDialog.dismiss();
+                        }
+                    });
+                    qtyDialog.show();
+                }
+            });
         }
     }
 

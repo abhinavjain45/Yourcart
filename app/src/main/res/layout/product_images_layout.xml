@@ -136,7 +136,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@color/buttonPrimary"
+        android:background="@color/primary"
         android:gravity="right"
         android:orientation="horizontal"
         android:padding="16dp"

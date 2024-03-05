@@ -80,7 +80,7 @@ public class RewardsFragment extends Fragment {
         rewardModalList.add(new RewardModal("Discount", "Valid Till: 09 December, 2024", "Get FLAT 10% CASHBACK on orders above Rs. 1,999/-"));
         rewardModalList.add(new RewardModal("BOGO", "Valid Till: 31 December, 2024", "Buy 1 Hoodie & Get 1 Hoodie Absolutely Free on orders above Rs. 999/-"));
 
-        RewardAdapter rewardAdapter = new RewardAdapter(rewardModalList);
+        RewardAdapter rewardAdapter = new RewardAdapter(rewardModalList, false);
         rewardsRecylcerView.setAdapter(rewardAdapter);
         rewardAdapter.notifyDataSetChanged();
 

@@ -13,15 +13,22 @@ import java.util.List;
 public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder> {
 
     private List<RewardModal> rewardModalList;
+    private Boolean useMiniLayout = false;
 
-    public RewardAdapter(List<RewardModal> rewardModalList) {
+    public RewardAdapter(List<RewardModal> rewardModalList, Boolean useMiniLayout) {
         this.rewardModalList = rewardModalList;
+        this.useMiniLayout = useMiniLayout;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rewards_item_layout, parent, false);
+        View view;
+        if (useMiniLayout) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mini_rewards_item_layout, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rewards_item_layout, parent, false);
+        }
         return new ViewHolder(view);
     }
 
@@ -57,6 +64,18 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.ViewHolder
             rewardTitle.setText(rwTitle);
             rewardValidity.setText(rwValidity);
             rewardDetails.setText(rwDetails);
+
+            if (useMiniLayout) {
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ProductDetailsActivity.couponTitle.setText(rwTitle);
+                        ProductDetailsActivity.couponValidity.setText(rwValidity);
+                        ProductDetailsActivity.couponDetails.setText(rwDetails);
+                        ProductDetailsActivity.showDialogRecyclerView();
+                    }
+                });
+            }
         }
     }
 }
