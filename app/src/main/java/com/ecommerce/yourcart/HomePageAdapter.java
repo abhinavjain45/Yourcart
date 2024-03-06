@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -78,7 +81,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 ((BannerSliderViewHolder) holder).setBannerSliderViewPager(sliderModelList);
                 break;
             case HomePageModal.STRIP_AD_BANNER:
-                int resource = homePageModalList.get(position).getResource();
+                String resource = homePageModalList.get(position).getResource();
                 String color = homePageModalList.get(position).getBackgroundColor();
                 ((StripAdBannerViewHolder) holder).setStripAd(resource, color);
                 break;
@@ -221,8 +224,8 @@ public class HomePageAdapter extends RecyclerView.Adapter {
             stripAdContainer = itemView.findViewById(R.id.strip_ad_container);
         }
 
-        private void setStripAd(int resource, String color) {
-            stripAdImage.setImageResource(resource);
+        private void setStripAd(String resource, String color) {
+            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.slider2)).into(stripAdImage);
             stripAdContainer.setBackgroundColor(Color.parseColor(color));
         }
     }
@@ -287,7 +290,7 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 TextView gridProductSpecification = gridProductLayout.getChildAt(x).findViewById(R.id.horizontal_scroll_product_specification);
                 TextView gridProductPrice = gridProductLayout.getChildAt(x).findViewById(R.id.horizontal_scroll_product_price);
 
-                gridProductImage.setImageResource(horizontalProductScrollModalList.get(x).getProductImage());
+//                Glide.with(itemView.getContext()).load(horizontalProductScrollModalList.get(x))
                 gridProductTitle.setText(horizontalProductScrollModalList.get(x).getProductTitle());
                 gridProductSpecification.setText(horizontalProductScrollModalList.get(x).getProductSpecification());
                 gridProductPrice.setText(horizontalProductScrollModalList.get(x).getProductPrice());

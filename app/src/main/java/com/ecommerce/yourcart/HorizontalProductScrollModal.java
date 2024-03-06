@@ -1,16 +1,25 @@
 package com.ecommerce.yourcart;
 
 public class HorizontalProductScrollModal {
-    private int productImage;
+    private String productID;
+    private String productImage;
     private String productTitle;
     private String productSpecification;
     private String productPrice;
 
-    public int getProductImage() {
+    public String getProductID() {
+        return productID;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
+    }
+
+    public String getProductImage() {
         return productImage;
     }
 
-    public void setProductImage(int productImage) {
+    public void setProductImage(String productImage) {
         this.productImage = productImage;
     }
 
@@ -38,7 +47,8 @@ public class HorizontalProductScrollModal {
         this.productPrice = productPrice;
     }
 
-    public HorizontalProductScrollModal(int productImage, String productTitle, String productSpecification, String productPrice) {
+    public HorizontalProductScrollModal(String productID, String productImage, String productTitle, String productSpecification, String productPrice) {
+        this.productID = productID;
         this.productImage = productImage;
         this.productTitle = productTitle;
         this.productSpecification = productSpecification;

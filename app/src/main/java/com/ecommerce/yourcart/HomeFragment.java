@@ -54,7 +54,8 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
-    private RecyclerView testing;
+    private RecyclerView homePageRecyclerView;
+    private HomePageAdapter adapter;
     private List<CategoryModal> categoryModalList;
     private FirebaseFirestore firebaseFirestore;
 
@@ -118,50 +119,69 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-        /////// Banner Slider
-        List<SliderModel> sliderModelList = new ArrayList<SliderModel>();
-        sliderModelList.add(new SliderModel(R.mipmap.slider1, "#077AE4"));
-        sliderModelList.add(new SliderModel(R.mipmap.slider2, "#077AE4"));
-        sliderModelList.add(new SliderModel(R.mipmap.slider3, "#077AE4"));
-        /////// Banner Slider
-
         /////// Horizontal Product Layout
-        List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
-        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
+//        List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
+//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
         /////// Horizontal Product Layout
 
         /////////////////////////////////////////
-        testing = view.findViewById(R.id.home_page_recycler_view);
+        homePageRecyclerView = view.findViewById(R.id.home_page_recycler_view);
         LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
         testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        testing.setLayoutManager(testingLayoutManager);
+        homePageRecyclerView.setLayoutManager(testingLayoutManager);
 
-        List<HomePageModal> homePageModalList = new ArrayList<>();
-        homePageModalList.add(new HomePageModal(0, sliderModelList));
-        homePageModalList.add(new HomePageModal(1, R.mipmap.slider3, "#000000"));
-        homePageModalList.add(new HomePageModal(2, "Deals of the Day", horizontalProductScrollModalList));
-        homePageModalList.add(new HomePageModal(3, "#trending", horizontalProductScrollModalList));
-        homePageModalList.add(new HomePageModal(2, "Latest This Week", horizontalProductScrollModalList));
-        homePageModalList.add(new HomePageModal(3, "#fashion_week", horizontalProductScrollModalList));
+        final List<HomePageModal> homePageModalList = new ArrayList<>();
 
-        HomePageAdapter adapter = new HomePageAdapter(homePageModalList);
-        testing.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        adapter = new HomePageAdapter(homePageModalList);
+        homePageRecyclerView.setAdapter(adapter);
+
+        firebaseFirestore.collection("CATEGORIES").document("HOME").collection("BANNERS_DATA").orderBy("index").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        if ((long)documentSnapshot.get("viewType") == 0) {
+                            List<SliderModel> sliderModelList = new ArrayList<>();
+                            long numberOfBanners = (long)documentSnapshot.get("numberOfBanners");
+                            for (long x = 1; x <= numberOfBanners; x++) {
+                                sliderModelList.add(new SliderModel(documentSnapshot.get("slider"+x+"image").toString(), documentSnapshot.get("slider"+x+"background").toString()));
+                            }
+                            homePageModalList.add(new HomePageModal(0, sliderModelList));
+                        } else if ((long)documentSnapshot.get("viewType") == 1) {
+                            homePageModalList.add(new HomePageModal(1, documentSnapshot.get("stripAdImage").toString(), documentSnapshot.get("stripAdBackground").toString()));
+                        } else if ((long)documentSnapshot.get("viewType") == 2) {
+                            List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
+                            long numberOfProducts = (long)documentSnapshot.get("numberOfProducts");
+                            for (long x = 1; x <= numberOfProducts; x++) {
+                                horizontalProductScrollModalList.add(new HorizontalProductScrollModal(documentSnapshot.get("productID"+x).toString(), documentSnapshot.get("productImage"+x).toString(), documentSnapshot.get("productTitle"+x).toString(), documentSnapshot.get("productSpecification"+x).toString(), documentSnapshot.get("productPrice"+x).toString()));
+                            }
+                            homePageModalList.add(new HomePageModal(2, documentSnapshot.get("layoutTitle").toString(), horizontalProductScrollModalList));
+                        } else if ((long)documentSnapshot.get("viewType") == 3) {
+
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         /////////////////////////////////////////
 
         return view;

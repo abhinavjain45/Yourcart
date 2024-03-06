@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.List;
 
 public class HorizontalProductScrollAdapter extends RecyclerView.Adapter<HorizontalProductScrollAdapter.ViewHolder> {
@@ -30,7 +33,7 @@ public class HorizontalProductScrollAdapter extends RecyclerView.Adapter<Horizon
 
     @Override
     public void onBindViewHolder(@NonNull HorizontalProductScrollAdapter.ViewHolder holder, int position) {
-        int resource = horizontalProductScrollModalList.get(position).getProductImage();
+        String resource = horizontalProductScrollModalList.get(position).getProductImage();
         String title = horizontalProductScrollModalList.get(position).getProductTitle();
         String specification = horizontalProductScrollModalList.get(position).getProductSpecification();
         String price = horizontalProductScrollModalList.get(position).getProductPrice();
@@ -71,9 +74,9 @@ public class HorizontalProductScrollAdapter extends RecyclerView.Adapter<Horizon
             });
         }
 
-        private void setProductImage(int resource) {
+        private void setProductImage(String resource) {
             if (productImage != null)  {
-                productImage.setImageResource(resource);
+                Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.product1)).into(productImage);
             }
         }
 
@@ -91,7 +94,7 @@ public class HorizontalProductScrollAdapter extends RecyclerView.Adapter<Horizon
 
         private void setProductPrice(String price) {
             if (productPrice != null) {
-                productPrice.setText(price);
+                productPrice.setText("Rs. "+price+"/-");
             }
         }
     }
