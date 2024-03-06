@@ -1,6 +1,15 @@
 package com.ecommerce.yourcart;
 
+import static com.ecommerce.yourcart.DataBaseQueries.categoryModalList;
+import static com.ecommerce.yourcart.DataBaseQueries.firebaseFirestore;
+import static com.ecommerce.yourcart.DataBaseQueries.homePageModalList;
+import static com.ecommerce.yourcart.DataBaseQueries.loadCategoriesForHomeCategorySlider;
+import static com.ecommerce.yourcart.DataBaseQueries.loadFragmentData;
+
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -56,8 +66,8 @@ public class HomeFragment extends Fragment {
     private CategoryAdapter categoryAdapter;
     private RecyclerView homePageRecyclerView;
     private HomePageAdapter adapter;
-    private List<CategoryModal> categoryModalList;
-    private FirebaseFirestore firebaseFirestore;
+    private ImageView noInternetImage;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -91,99 +101,47 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        noInternetImage = view.findViewById(R.id.no_internet_indicator);
 
-        categoryRecyclerView = view.findViewById(R.id.category_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        categoryRecyclerView.setLayoutManager(layoutManager);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        categoryModalList = new ArrayList<CategoryModal>();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            noInternetImage.setVisibility(View.GONE);
 
-        categoryAdapter = new CategoryAdapter(categoryModalList);
-        categoryRecyclerView.setAdapter(categoryAdapter);
+            categoryRecyclerView = view.findViewById(R.id.category_recycler_view);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            categoryRecyclerView.setLayoutManager(layoutManager);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("CATEGORIES").orderBy("index").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                categoryModalList.add(new CategoryModal(documentSnapshot.get("categoryIcon").toString(), documentSnapshot.get("categoryName").toString()));
-                            }
-                            categoryAdapter.notifyDataSetChanged();
-                        } else {
-                            String error = task.getException().getMessage();
-                            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+            categoryAdapter = new CategoryAdapter(categoryModalList);
+            categoryRecyclerView.setAdapter(categoryAdapter);
 
-        /////// Horizontal Product Layout
-//        List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 1", "Product Specification", "Rs. 9543/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 2", "Product Specification", "Rs. 9876/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 3", "Product Specification", "Rs. 6754/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 4", "Product Specification", "Rs. 1652/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 5", "Product Specification", "Rs. 8765/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product3,"Demo Product 6", "Product Specification", "Rs. 2453/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product1,"Demo Product 7", "Product Specification", "Rs. 1652/-"));
-//        horizontalProductScrollModalList.add(new HorizontalProductScrollModal(R.mipmap.product2,"Demo Product 8", "Product Specification", "Rs. 1987/-"));
-        /////// Horizontal Product Layout
-
-        /////////////////////////////////////////
-        homePageRecyclerView = view.findViewById(R.id.home_page_recycler_view);
-        LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
-        testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        homePageRecyclerView.setLayoutManager(testingLayoutManager);
-
-        final List<HomePageModal> homePageModalList = new ArrayList<>();
-
-        adapter = new HomePageAdapter(homePageModalList);
-        homePageRecyclerView.setAdapter(adapter);
-
-        firebaseFirestore.collection("CATEGORIES").document("HOME").collection("BANNERS_DATA").orderBy("index").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                        if ((long)documentSnapshot.get("viewType") == 0) {
-                            List<SliderModel> sliderModelList = new ArrayList<>();
-                            long numberOfBanners = (long)documentSnapshot.get("numberOfBanners");
-                            for (long x = 1; x <= numberOfBanners; x++) {
-                                sliderModelList.add(new SliderModel(documentSnapshot.get("slider"+x+"image").toString(), documentSnapshot.get("slider"+x+"background").toString()));
-                            }
-                            homePageModalList.add(new HomePageModal(0, sliderModelList));
-                        } else if ((long)documentSnapshot.get("viewType") == 1) {
-                            homePageModalList.add(new HomePageModal(1, documentSnapshot.get("stripAdImage").toString(), documentSnapshot.get("stripAdBackground").toString()));
-                        } else if ((long)documentSnapshot.get("viewType") == 2) {
-                            List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
-                            long numberOfProducts = (long)documentSnapshot.get("numberOfProducts");
-                            for (long x = 1; x <= numberOfProducts; x++) {
-                                horizontalProductScrollModalList.add(new HorizontalProductScrollModal(documentSnapshot.get("productID"+x).toString(), documentSnapshot.get("productImage"+x).toString(), documentSnapshot.get("productTitle"+x).toString(), documentSnapshot.get("productSpecification"+x).toString(), documentSnapshot.get("productPrice"+x).toString()));
-                            }
-                            homePageModalList.add(new HomePageModal(2, documentSnapshot.get("layoutTitle").toString(), horizontalProductScrollModalList));
-                        } else if ((long)documentSnapshot.get("viewType") == 3) {
-
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-                }
+            if (categoryModalList.size() == 0) {
+                loadCategoriesForHomeCategorySlider(categoryAdapter, getContext());
+            } else {
+                categoryAdapter.notifyDataSetChanged();
             }
-        });
-        /////////////////////////////////////////
 
+            /////////////////////////////////////////
+            homePageRecyclerView = view.findViewById(R.id.home_page_recycler_view);
+            LinearLayoutManager testingLayoutManager = new LinearLayoutManager(getContext());
+            testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            homePageRecyclerView.setLayoutManager(testingLayoutManager);
+
+            adapter = new HomePageAdapter(homePageModalList);
+            homePageRecyclerView.setAdapter(adapter);
+
+            if (homePageModalList.size() == 0) {
+                loadFragmentData(adapter, getContext());
+            } else {
+                adapter.notifyDataSetChanged();
+            }
+            /////////////////////////////////////////
+        } else {
+            Glide.with(this).load(R.mipmap.nointernetindicator).into(noInternetImage);
+            noInternetImage.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 }

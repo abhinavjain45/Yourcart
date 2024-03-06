@@ -20,6 +20,7 @@ public class ViewAllActivity extends AppCompatActivity {
 
     private RecyclerView viewAllRecyclerView;
     private GridView viewAllGridView;
+    public static List<HorizontalProductScrollModal> horizontalProductScrollModalList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class ViewAllActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle("Deals of the Day");
+        getSupportActionBar().setTitle(getIntent().getStringExtra("title"));
 
         viewAllRecyclerView = findViewById(R.id.view_all_recycler_view);
         viewAllGridView = findViewById(R.id.view_all_grid_view);
@@ -67,8 +68,6 @@ public class ViewAllActivity extends AppCompatActivity {
             wishlistAdapter.notifyDataSetChanged();
         } else if (LayoutCode == 1) {
             viewAllGridView.setVisibility(View.VISIBLE);
-
-            List<HorizontalProductScrollModal> horizontalProductScrollModalList = new ArrayList<>();
 
             GridProductLayoutAdapter gridProductLayoutAdapter = new GridProductLayoutAdapter(horizontalProductScrollModalList);
             viewAllGridView.setAdapter(gridProductLayoutAdapter);

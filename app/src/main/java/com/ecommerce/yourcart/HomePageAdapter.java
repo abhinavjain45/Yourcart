@@ -290,10 +290,10 @@ public class HomePageAdapter extends RecyclerView.Adapter {
                 TextView gridProductSpecification = gridProductLayout.getChildAt(x).findViewById(R.id.horizontal_scroll_product_specification);
                 TextView gridProductPrice = gridProductLayout.getChildAt(x).findViewById(R.id.horizontal_scroll_product_price);
 
-//                Glide.with(itemView.getContext()).load(horizontalProductScrollModalList.get(x))
+                Glide.with(itemView.getContext()).load(horizontalProductScrollModalList.get(x).getProductImage()).apply(new RequestOptions().placeholder(R.mipmap.product1)).into(gridProductImage);
                 gridProductTitle.setText(horizontalProductScrollModalList.get(x).getProductTitle());
                 gridProductSpecification.setText(horizontalProductScrollModalList.get(x).getProductSpecification());
-                gridProductPrice.setText(horizontalProductScrollModalList.get(x).getProductPrice());
+                gridProductPrice.setText("Rs. "+horizontalProductScrollModalList.get(x).getProductPrice()+"/-");
 
                 gridProductLayout.getChildAt(x).setBackgroundColor(Color.parseColor("#ffffff"));
                 gridProductLayout.getChildAt(x).setOnClickListener(new View.OnClickListener() {
@@ -308,8 +308,10 @@ public class HomePageAdapter extends RecyclerView.Adapter {
             gridLayoutViewAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ViewAllActivity.horizontalProductScrollModalList = horizontalProductScrollModalList;
                     Intent viewAllIntent = new Intent(itemView.getContext(), ViewAllActivity.class);
                     viewAllIntent.putExtra("LayoutCode", 1);
+                    viewAllIntent.putExtra("title", title);
                     itemView.getContext().startActivity(viewAllIntent);
                 }
             });
