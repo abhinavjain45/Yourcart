@@ -84,7 +84,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         }
 
         private void setWishlistData(String resource, String productTitle, long freeCouponCount, String averageRating, long totalRatingNumber, String displayPrice, String displayCuttedPrice, Boolean paymentMethod) {
-            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.product1)).into(wishlistProductImage);
+            Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.productplaceholder)).into(wishlistProductImage);
             wishlistProductTitle.setText(productTitle);
             if (freeCouponCount!= 0) {
                 couponIcon.setVisibility(View.VISIBLE);
