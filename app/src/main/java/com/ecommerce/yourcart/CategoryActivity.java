@@ -1,5 +1,9 @@
 package com.ecommerce.yourcart;
 
+import static com.ecommerce.yourcart.DataBaseQueries.listHomePageModalList;
+import static com.ecommerce.yourcart.DataBaseQueries.loadFragmentData;
+import static com.ecommerce.yourcart.DataBaseQueries.loadedCategoriesNames;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +19,7 @@ import java.util.List;
 public class CategoryActivity extends AppCompatActivity {
 
     private RecyclerView categoryRecyclerView;
+    private HomePageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +39,22 @@ public class CategoryActivity extends AppCompatActivity {
         testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         categoryRecyclerView.setLayoutManager(testingLayoutManager);
 
-        List<HomePageModal> homePageModalList = new ArrayList<>();
+        int listPosition = 0;
+        for (int x = 0; x < loadedCategoriesNames.size(); x++) {
+            if (loadedCategoriesNames.get(x).equals(title.toUpperCase())) {
+                listPosition = x;
+            }
+        }
 
-        HomePageAdapter adapter = new HomePageAdapter(homePageModalList);
+        if (listPosition == 0) {
+            loadedCategoriesNames.add(title.toUpperCase());
+            listHomePageModalList.add(new ArrayList<HomePageModal>());
+            adapter = new HomePageAdapter(listHomePageModalList.get(loadedCategoriesNames.size() - 1));
+            loadFragmentData(categoryRecyclerView, this, loadedCategoriesNames.size() - 1, title);
+        } else {
+            adapter = new HomePageAdapter(listHomePageModalList.get(listPosition));
+        }
+
         categoryRecyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

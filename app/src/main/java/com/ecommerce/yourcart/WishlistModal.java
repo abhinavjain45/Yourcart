@@ -1,16 +1,16 @@
 package com.ecommerce.yourcart;
 
 public class WishlistModal {
-    private int wishlistProductImage;
+    private String wishlistProductImage;
     private String wishlistProductTitle;
-    private int wishlistFreeCouponNumber;
+    private long wishlistFreeCouponNumber;
     private String productAverageRating;
-    private int productTotalRatings;
+    private long productTotalRatings;
     private String wishlistProductPrice;
     private String wishlistCuttedPrice;
-    private String availablePaymentMethod;
+    private Boolean availablePaymentMethod;
 
-    public WishlistModal(int wishlistProductImage, String wishlistProductTitle, int wishlistFreeCouponNumber, String productAverageRating, int productTotalRatings, String wishlistProductPrice, String wishlistCuttedPrice, String availablePaymentMethod) {
+    public WishlistModal(String wishlistProductImage, String wishlistProductTitle, long wishlistFreeCouponNumber, String productAverageRating, long productTotalRatings, String wishlistProductPrice, String wishlistCuttedPrice, Boolean availablePaymentMethod) {
         this.wishlistProductImage = wishlistProductImage;
         this.wishlistProductTitle = wishlistProductTitle;
         this.wishlistFreeCouponNumber = wishlistFreeCouponNumber;
@@ -21,11 +21,11 @@ public class WishlistModal {
         this.availablePaymentMethod = availablePaymentMethod;
     }
 
-    public int getWishlistProductImage() {
+    public String getWishlistProductImage() {
         return wishlistProductImage;
     }
 
-    public void setWishlistProductImage(int wishlistProductImage) {
+    public void setWishlistProductImage(String wishlistProductImage) {
         this.wishlistProductImage = wishlistProductImage;
     }
 
@@ -37,11 +37,11 @@ public class WishlistModal {
         this.wishlistProductTitle = wishlistProductTitle;
     }
 
-    public int getWishlistFreeCouponNumber() {
+    public long getWishlistFreeCouponNumber() {
         return wishlistFreeCouponNumber;
     }
 
-    public void setWishlistFreeCouponNumber(int wishlistFreeCouponNumber) {
+    public void setWishlistFreeCouponNumber(long wishlistFreeCouponNumber) {
         this.wishlistFreeCouponNumber = wishlistFreeCouponNumber;
     }
 
@@ -53,11 +53,11 @@ public class WishlistModal {
         this.productAverageRating = productAverageRating;
     }
 
-    public int getProductTotalRatings() {
+    public long getProductTotalRatings() {
         return productTotalRatings;
     }
 
-    public void setProductTotalRatings(int productTotalRatings) {
+    public void setProductTotalRatings(long productTotalRatings) {
         this.productTotalRatings = productTotalRatings;
     }
 
@@ -77,11 +77,11 @@ public class WishlistModal {
         this.wishlistCuttedPrice = wishlistCuttedPrice;
     }
 
-    public String getAvailablePaymentMethod() {
+    public Boolean getAvailablePaymentMethod() {
         return availablePaymentMethod;
     }
 
-    public void setAvailablePaymentMethod(String availablePaymentMethod) {
+    public void setAvailablePaymentMethod(Boolean availablePaymentMethod) {
         this.availablePaymentMethod = availablePaymentMethod;
     }
 }

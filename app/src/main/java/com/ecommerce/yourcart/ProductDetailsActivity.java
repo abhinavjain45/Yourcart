@@ -2,8 +2,10 @@ package com.ecommerce.yourcart;
 
 import static com.ecommerce.yourcart.MainActivity.showCart;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -21,10 +23,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.checkerframework.checker.units.qual.C;
 
@@ -35,13 +43,26 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private ViewPager productImagesViewPager;
     private TabLayout viewPagerIndicator;
+    private TextView productTitle;
+    private TextView productAverageRatingMinview;
+    private TextView productTotalRatingsMiniview;
+    private TextView productPrice;
+    private TextView productCuttedPrice;
+    private TextView rewardTitle;
+    private TextView rewardBody;
     private FloatingActionButton addToWishlistButton;
     private static Boolean ALREADY_ADDED_TO_WISHLIST = false;
     private ViewPager productDetailsViewPager;
     private TabLayout productDetailsTabLayout;
 
+
     /////rating layout
     private LinearLayout rateNowContainer;
+    private LinearLayout ratingsNumberContainer;
+    private LinearLayout ratingsProgressBarContainer;
+    private TextView totalRatingsCount;
+    private TextView totalRatingsFigure;
+    private TextView averageRating;
     /////rating layout
 
     ////coupons dialog
@@ -52,8 +73,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private static LinearLayout selectedCoupon;
     ////coupons dialog
 
+    ////Product Description
+    private ConstraintLayout productDescriptionLayout;
+    private ConstraintLayout productDescriptionTabLayout;
+    private List<ProductSpecificationModal> productSpecificationModalList = new ArrayList<>();
+    private String productDescription;
+    private String productOtherDetails;
+    private TextView productOnlyDescriptionBody;
+    ////Product Description
+
     private Button buyNowButton;
     private Button couponRedeemButton;
+
+    private FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +103,89 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productDetailsTabLayout = findViewById(R.id.product_details_tab_layout);
         buyNowButton = findViewById(R.id.buy_now_button);
         couponRedeemButton = findViewById(R.id.coupon_redemption_button);
+        productTitle = findViewById(R.id.product_title);
+        productAverageRatingMinview = findViewById(R.id.tv_product_rating_miniview);
+        productTotalRatingsMiniview = findViewById(R.id.total_ratings_miniview);
+        productPrice = findViewById(R.id.product_price);
+        productCuttedPrice = findViewById(R.id.cutted_price);
+        rewardTitle = findViewById(R.id.reward_title);
+        rewardBody = findViewById(R.id.reward_body);
+        productDescriptionLayout = findViewById(R.id.product_details_container);
+        productDescriptionTabLayout = findViewById(R.id.product_details_tabs_container);
+        productOnlyDescriptionBody = findViewById(R.id.product_details_body);
+        totalRatingsCount = findViewById(R.id.total_ratings_count);
+        ratingsNumberContainer = findViewById(R.id.ratings_numbers_count_container);
+        totalRatingsFigure = findViewById(R.id.total_ratings_figure);
+        ratingsProgressBarContainer = findViewById(R.id.ratings_progress_bar_container);
+        averageRating = findViewById(R.id.average_rating);
 
-        List<Integer> productImages = new ArrayList<>();
-        productImages.add(R.mipmap.product1);
-        productImages.add(R.mipmap.product2);
-        productImages.add(R.mipmap.product3);
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-        ProductImagesAdapter productImagesAdapter = new ProductImagesAdapter(productImages);
-        productImagesViewPager.setAdapter(productImagesAdapter);
+        List<String> productImages = new ArrayList<>();
+
+        firebaseFirestore.collection("PRODUCTS").document("ujKpZSLeSLulTaScJzUu")
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            long numberOfProductImages = (long) documentSnapshot.getLong("numberOfProductImages");
+                            for (long x = 1; x <= numberOfProductImages; x++) {
+                                productImages.add(documentSnapshot.get("productImage"+x).toString());
+                            }
+                            ProductImagesAdapter productImagesAdapter = new ProductImagesAdapter(productImages);
+                            productImagesViewPager.setAdapter(productImagesAdapter);
+
+                            productTitle.setText(documentSnapshot.get("productTitle").toString());
+                            productAverageRatingMinview.setText(documentSnapshot.get("productAverageRating").toString());
+                            productTotalRatingsMiniview.setText("("+(long) documentSnapshot.get("productTotalRatings")+") Ratings");
+                            productPrice.setText("Rs. "+documentSnapshot.get("productPrice").toString()+"/-");
+                            productCuttedPrice.setText("Rs. "+documentSnapshot.get("productCuttedPrice").toString()+"/-");
+                            rewardTitle.setText(documentSnapshot.get("freeCouponTitle").toString());
+                            rewardBody.setText(documentSnapshot.get("freeCouponBody").toString());
+
+                            if ((boolean) documentSnapshot.get("useTabLayout")) {
+                                productDescriptionTabLayout.setVisibility(View.VISIBLE);
+                                productDescriptionLayout.setVisibility(View.GONE);
+
+                                productDescription = documentSnapshot.get("productDescription").toString();
+                                productOtherDetails = documentSnapshot.get("productOtherDetails").toString();
+
+                                long numberOfProductSpecificationTitles = (long) documentSnapshot.get("numberOfProductSpecificationTitles");
+                                for (long x = 1; x <= numberOfProductSpecificationTitles; x++) {
+                                    productSpecificationModalList.add(new ProductSpecificationModal(0, documentSnapshot.get("productSpecificationTitle"+x).toString()));
+
+                                    for (long y = 1; y <= (long) documentSnapshot.get("numberOfFieldsInSpecificationTitle"+x); y++) {
+                                        productSpecificationModalList.add(new ProductSpecificationModal(1, documentSnapshot.get("fieldName"+y+"SpecificationTitle"+x).toString(), documentSnapshot.get("fieldValue"+y+"SpecificationTitle"+x).toString()));
+                                    }
+                                }
+                            } else {
+                                productDescriptionTabLayout.setVisibility(View.GONE);
+                                productDescriptionLayout.setVisibility(View.VISIBLE);
+
+                                productOnlyDescriptionBody.setText(productDescription);
+                            }
+
+                            averageRating.setText(documentSnapshot.get("productAverageRating").toString());
+                            totalRatingsCount.setText((long) documentSnapshot.get("productTotalRatings")+ " Ratings");
+                            for (int x = 0; x < 5; x++) {
+                                TextView individualRatings = (TextView) ratingsNumberContainer.getChildAt(x);
+                                individualRatings.setText(String.valueOf((long) documentSnapshot.get("total"+(5-x)+"StarRatings")));
+
+                                ProgressBar progressBar = (ProgressBar) ratingsProgressBarContainer.getChildAt(x);
+                                int maxProgress = Integer.parseInt(String.valueOf((long) documentSnapshot.get("productTotalRatings")));
+                                progressBar.setMax(maxProgress);
+                                progressBar.setProgress(Integer.parseInt(String.valueOf((long) documentSnapshot.get("total"+(5-x)+"StarRatings"))));
+                            }
+                            totalRatingsFigure.setText(String.valueOf((long) documentSnapshot.get("productTotalRatings")));
+
+                            productDetailsViewPager.setAdapter(new ProductDetailsAdapter(getSupportFragmentManager(),productDetailsTabLayout.getTabCount(), productDescription, productOtherDetails, productSpecificationModalList));
+                        } else {
+                            String error = task.getException().getMessage();
+                            Toast.makeText(ProductDetailsActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
         viewPagerIndicator.setupWithViewPager(productImagesViewPager, true);
 
@@ -99,8 +206,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        productDetailsViewPager.setAdapter(new ProductDetailsAdapter(getSupportFragmentManager(),productDetailsTabLayout.getTabCount()));
 
         productDetailsViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(productDetailsTabLayout));
         productDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

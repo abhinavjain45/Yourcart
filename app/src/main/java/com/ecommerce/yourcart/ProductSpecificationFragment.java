@@ -34,6 +34,7 @@ public class ProductSpecificationFragment extends Fragment {
     }
 
     private RecyclerView productSpecificationRecyclerView;
+    public List<ProductSpecificationModal> productSpecificationModalList;
 
     /**
      * Use this factory method to create a new instance of
@@ -75,31 +76,30 @@ public class ProductSpecificationFragment extends Fragment {
 
         productSpecificationRecyclerView.setLayoutManager(linearLayoutManager);
 
-        List<ProductSpecificationModal> productSpecificationModalList = new ArrayList<>();
-        productSpecificationModalList.add(new ProductSpecificationModal(0, "General"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(0, "Display"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(0, "General"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(0, "Display"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
-        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(0, "General"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(0, "Display"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(0, "General"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(0, "Display"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
+//        productSpecificationModalList.add(new ProductSpecificationModal(1, "RAM", "4GB"));
 
 
         ProductSpecificationAdapter productSpecificationAdapter = new ProductSpecificationAdapter(productSpecificationModalList);

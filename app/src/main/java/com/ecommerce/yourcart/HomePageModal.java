@@ -68,12 +68,29 @@ public class HomePageModal {
     ///// Horizontal Product & Grid Product
     private String title;
     private List<HorizontalProductScrollModal> horizontalProductScrollModalList;
+    private List<WishlistModal> viewAllProductModalList;
+
+    public HomePageModal(int type, String title, List<HorizontalProductScrollModal> horizontalProductScrollModalList, List<WishlistModal> viewAllProductProductModalList) {
+        this.type = type;
+        this.title = title;
+        this.horizontalProductScrollModalList = horizontalProductScrollModalList;
+        this.viewAllProductModalList = viewAllProductProductModalList;
+    }
 
     public HomePageModal(int type, String title, List<HorizontalProductScrollModal> horizontalProductScrollModalList) {
         this.type = type;
         this.title = title;
         this.horizontalProductScrollModalList = horizontalProductScrollModalList;
     }
+
+    public List<WishlistModal> getViewAllProductModalList() {
+        return viewAllProductModalList;
+    }
+
+    public void setViewAllProductModalList(List<WishlistModal> viewAllProductModalList) {
+        this.viewAllProductModalList = viewAllProductModalList;
+    }
+
     public String getTitle() {
         return title;
     }
