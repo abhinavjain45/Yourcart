@@ -29,7 +29,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:elevation="3dp"
-        android:src="@mipmap/product1"
+        android:src="@mipmap/productplaceholder"
         app:civ_border_color="@color/primary"
         app:civ_border_width="5dp"
         app:layout_constraintEnd_toEndOf="parent"

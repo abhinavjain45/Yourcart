@@ -15,11 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
@@ -38,11 +41,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REWARDS_FRAGMENT = 4;
     private static final int MY_ACCOUNT_FRAGMENT = 5;
     public static Boolean showCart = false;
+    public static DrawerLayout drawer;
     private AppBarConfiguration mAppBarConfiguration;
     private FrameLayout frameLayout;
     private int currentFragment = -1;
     private NavigationView navigationView;
     private ImageView actionBarLogo;
+    private Dialog signInDialog;
+    private FirebaseUser currentUser;
+    private TextView badgeCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarLogo = findViewById(R.id.action_bar_logo);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -71,6 +78,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toggle.syncState();
             setFragment(new HomeFragment(), HOME_FRAGMENT);
         }
+
+        signInDialog = new Dialog(MainActivity.this);
+        signInDialog.setContentView(R.layout.sign_in_dialog);
+        signInDialog.setCancelable(true);
+        signInDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button dialogSignInButton = signInDialog.findViewById(R.id.qty_dialog_cancel_button);
+        Button dialogSignUpButton = signInDialog.findViewById(R.id.qty_dialog_continue_button);
+
+        Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+
+        dialogSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInFragment.disableCloseButton = true;
+                SignUpFragment.disableCloseButton = true;
+                signInDialog.dismiss();
+                setSignUpFragment = false;
+                startActivity(registerIntent);
+            }
+        });
+
+        dialogSignUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignInFragment.disableCloseButton = true;
+                SignUpFragment.disableCloseButton = true;
+                signInDialog.dismiss();
+                setSignUpFragment = true;
+                startActivity(registerIntent);
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            navigationView.getMenu().getItem(navigationView.getMenu().size() - 1).setEnabled(false);
+        } else {
+            navigationView.getMenu().getItem(navigationView.getMenu().size() - 1).setEnabled(true);
+        }
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -102,6 +153,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentFragment == HOME_FRAGMENT) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getMenuInflater().inflate(R.menu.main, menu);
+
+            MenuItem cartItem = menu.findItem(R.id.main_cart_icon);
+            cartItem.setActionView(R.layout.badge_layout);
+            ImageView badgeIcon = cartItem.getActionView().findViewById(R.id.badge_icon);
+            badgeIcon.setImageResource(R.mipmap.cartwhite);
+            badgeCount = cartItem.getActionView().findViewById(R.id.badge_count);
+
+            if (currentUser != null) {
+                if (DataBaseQueries.cartlist.size() == 0) {
+                    DataBaseQueries.loadCartList(MainActivity.this, new Dialog(MainActivity.this), false, badgeCount);
+                    badgeCount.setVisibility(View.INVISIBLE);
+                } else {
+                    badgeCount.setVisibility(View.VISIBLE);
+                    if (DataBaseQueries.cartlist.size() < 99) {
+                        badgeCount.setText(String.valueOf(DataBaseQueries.cartlist.size()));
+                    } else {
+                        badgeCount.setText("99");
+                    }
+                }
+            }
+
+            cartItem.getActionView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (currentUser == null) {
+                        signInDialog.show();
+                    } else {
+                        goToFragment("Shopping Cart", new MyCartFragment(), CART_FRAGMENT);
+                    }
+                }
+            });
         }
         return true;
     }
@@ -115,36 +197,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.main_notification_icon) {
             return true;
         } else if (id == R.id.main_cart_icon) {
-            final Dialog signInDialog = new Dialog(MainActivity.this);
-            signInDialog.setContentView(R.layout.sign_in_dialog);
-            signInDialog.setCancelable(true);
-            signInDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            Button dialogSignInButton = signInDialog.findViewById(R.id.qty_dialog_cancel_button);
-            Button dialogSignUpButton = signInDialog.findViewById(R.id.qty_dialog_continue_button);
-
-            Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
-
-            dialogSignInButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signInDialog.dismiss();
-                    setSignUpFragment = false;
-                    startActivity(registerIntent);
-                }
-            });
-
-            dialogSignUpButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signInDialog.dismiss();
-                    setSignUpFragment = true;
-                    startActivity(registerIntent);
-                }
-            });
-            signInDialog.show();
-
-            //  goToFragment("Shopping Cart", new MyCartFragment(), CART_FRAGMENT);
+            if (currentUser == null) {
+                signInDialog.show();
+            } else {
+                goToFragment("Shopping Cart", new MyCartFragment(), CART_FRAGMENT);
+            }
             return true;
         } else if (id == android.R.id.home) {
             if (showCart) {
@@ -163,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setTitle(fragmentTitle);
         invalidateOptionsMenu();
         setFragment(fragment, fragmentNumber);
-        if (fragmentNumber == CART_FRAGMENT){
+        if (fragmentNumber == CART_FRAGMENT) {
             navigationView.getMenu().getItem(3).setChecked(true);
         }
     }
@@ -171,29 +228,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            actionBarLogo.setVisibility(View.VISIBLE);
-            invalidateOptionsMenu();
-            setFragment(new HomeFragment(), HOME_FRAGMENT);
-        } else if (id == R.id.nav_my_orders) {
-            goToFragment("My Orders", new MyOrdersFragment(), ORDER_FRAGMENT);
-        } else if (id == R.id.nav_my_rewards) {
-            goToFragment("Rewards", new RewardsFragment(), REWARDS_FRAGMENT);
-        } else if (id == R.id.nav_my_shopping_cart) {
-            goToFragment("Shopping Cart", new MyCartFragment(), CART_FRAGMENT);
-        } else if (id == R.id.nav_my_wishlist) {
-            goToFragment("Wishlist", new WishlistFragment(), WISHLIST_FRAGMENT);
-        } else if (id == R.id.nav_my_account) {
-            goToFragment("My Account", new MyAccountFragment(), MY_ACCOUNT_FRAGMENT);
-        } else if (id == R.id.nav_sign_out) {
-
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+
+        if (currentUser != null) {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                actionBarLogo.setVisibility(View.VISIBLE);
+                invalidateOptionsMenu();
+                setFragment(new HomeFragment(), HOME_FRAGMENT);
+            } else if (id == R.id.nav_my_orders) {
+                goToFragment("My Orders", new MyOrdersFragment(), ORDER_FRAGMENT);
+            } else if (id == R.id.nav_my_rewards) {
+                goToFragment("Rewards", new RewardsFragment(), REWARDS_FRAGMENT);
+            } else if (id == R.id.nav_my_shopping_cart) {
+                goToFragment("Shopping Cart", new MyCartFragment(), CART_FRAGMENT);
+            } else if (id == R.id.nav_my_wishlist) {
+                goToFragment("Wishlist", new WishlistFragment(), WISHLIST_FRAGMENT);
+            } else if (id == R.id.nav_my_account) {
+                goToFragment("My Account", new MyAccountFragment(), MY_ACCOUNT_FRAGMENT);
+            } else if (id == R.id.nav_sign_out) {
+                FirebaseAuth.getInstance().signOut();
+                DataBaseQueries.clearData();
+                Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
+                finish();
+            }
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        } else {
+            drawer.closeDrawer(GravityCompat.START);
+            signInDialog.show();
+            return false;
+        }
     }
 
     /*
@@ -210,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             currentFragment = fragmentNo;
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-            fragmentTransaction.replace(frameLayout.getId(),fragment);
+            fragmentTransaction.replace(frameLayout.getId(), fragment);
             fragmentTransaction.commit();
         }
     }

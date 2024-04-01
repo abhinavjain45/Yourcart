@@ -13,4 +13,43 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    <string-array name="india_states">
+        <item>Andhra Pradesh</item>
+        <item>Arunachal Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chhattisgarh</item>
+        <item>Goa</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Himachal Pradesh</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Manipur</item>
+        <item>Meghalaya</item>
+        <item>Mizoram</item>
+        <item>Nagaland</item>
+        <item>Odisha</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Sikkim</item>
+        <item>Tamil Nadu</item>
+        <item>Telangana</item>
+        <item>Tripura</item>
+        <item>Uttarakhand</item>
+        <item>Uttar Pradesh</item>
+        <item>West Bengal</item>
+        <item>Andaman and Nicobar Islands</item>
+        <item>Chandigarh</item>
+        <item>Dadra and Nagar Haveli and Daman &amp; Diu</item>
+        <item>The Government of NCT of Delhi</item>
+        <item>Jammu &amp; Kashmir</item>
+        <item>Ladakh</item>
+        <item>Lakshadweep</item>
+        <item>Puducherry</item>
+    </string-array>
 </resources>

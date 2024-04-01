@@ -27,10 +27,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +73,7 @@ public class SignUpFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
 
     private String emailPattern = "[1-zA-Z0-9._-]+@[a-z]+.[a-z]+";
+    public static Boolean disableCloseButton = false;
 
     /**
      * Use this factory method to create a new instance of
@@ -118,6 +122,12 @@ public class SignUpFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        if (disableCloseButton) {
+            closeBtn.setVisibility(View.GONE);
+        } else {
+            closeBtn.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -259,20 +269,65 @@ public class SignUpFragment extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
 
-                                    Map<Object,String > userdata = new HashMap<>();
+                                    Map<String, Object> userdata = new HashMap<>();
                                     userdata.put("fullname", fullName.getText().toString());
 
-                                    firebaseFirestore.collection("USERS")
-                                            .add(userdata)
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    firebaseFirestore.collection("USERS").document(firebaseAuth.getUid())
+                                            .set(userdata)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        mainIntent();
+
+                                                        CollectionReference userDataReference = firebaseFirestore.collection("USERS").document(firebaseAuth.getUid()).collection("USER_DATA");
+
+                                                        //// Maps
+                                                        Map<String, Object> wishlistMap = new HashMap<>();
+                                                        wishlistMap.put("listSize", (long) 0);
+
+                                                        Map<String, Object> ratingsMap = new HashMap<>();
+                                                        ratingsMap.put("listSize", (long) 0);
+
+                                                        Map<String, Object> cartMap = new HashMap<>();
+                                                        cartMap.put("listSize", (long) 0);
+
+                                                        Map<String, Object> addressesMap = new HashMap<>();
+                                                        cartMap.put("listSize", (long) 0);
+                                                        //// Maps
+
+                                                        List<String> documentNames = new ArrayList<>();
+                                                        documentNames.add("WISHLIST_DATA");
+                                                        documentNames.add("RATINGS_DATA");
+                                                        documentNames.add("CART_DATA");
+                                                        documentNames.add("ADDRESSES_DATA");
+
+                                                        List<Map<String, Object>> documentFields = new ArrayList<>();
+                                                        documentFields.add(wishlistMap);
+                                                        documentFields.add(ratingsMap);
+                                                        documentFields.add(cartMap);
+                                                        documentFields.add(addressesMap);
+
+                                                        for (int x = 0; x < documentNames.size(); x++) {
+                                                            int finalX = x;
+                                                            userDataReference.document(documentNames.get(x))
+                                                                    .set(documentFields.get(x)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()){
+                                                                                if (finalX == documentNames.size() - 1) {
+                                                                                    mainIntent();
+                                                                                }
+                                                                            } else {
+                                                                                progressBar.setVisibility(View.INVISIBLE);
+                                                                                signUpBtn.setEnabled(true);
+                                                                                signUpBtn.setTextColor(Color.rgb(255, 255, 255));
+                                                                                String error = task.getException().getMessage();
+                                                                                Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        }
                                                     } else {
-                                                        progressBar.setVisibility(View.INVISIBLE);
-                                                        signUpBtn.setEnabled(true);
-                                                        signUpBtn.setTextColor(Color.rgb(255, 255, 255));
                                                         String error = task.getException().getMessage();
                                                         Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
                                                     }
@@ -296,8 +351,12 @@ public class SignUpFragment extends Fragment {
     }
 
     private void mainIntent() {
-        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
-        startActivity(mainIntent);
+        if (disableCloseButton) {
+            disableCloseButton = false;
+        } else {
+            Intent mainIntent = new Intent(getActivity(), MainActivity.class);
+            startActivity(mainIntent);
+        }
         getActivity().finish();
     }
 }

@@ -49,6 +49,7 @@ public class GridProductLayoutAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     Intent productDetailsIntent = new Intent(parent.getContext(), ProductDetailsActivity.class);
+                    productDetailsIntent.putExtra("PRODUCT_ID", horizontalProductScrollModalList.get(position).getProductID());
                     parent.getContext().startActivity(productDetailsIntent);
                 }
             });
@@ -58,7 +59,7 @@ public class GridProductLayoutAdapter extends BaseAdapter {
             TextView productSpecification = view.findViewById(R.id.horizontal_scroll_product_specification);
             TextView productPrice = view.findViewById(R.id.horizontal_scroll_product_price);
 
-            Glide.with(parent.getContext()).load(horizontalProductScrollModalList.get(position).getProductImage()).apply(new RequestOptions().placeholder(R.mipmap.product1)).into(productImage);
+            Glide.with(parent.getContext()).load(horizontalProductScrollModalList.get(position).getProductImage()).apply(new RequestOptions().placeholder(R.mipmap.productplaceholder)).into(productImage);
             productTitle.setText(horizontalProductScrollModalList.get(position).getProductTitle());
             productSpecification.setText(horizontalProductScrollModalList.get(position).getProductSpecification());
             productPrice.setText("Rs. "+horizontalProductScrollModalList.get(position).getProductPrice()+"/-");

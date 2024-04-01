@@ -1,5 +1,7 @@
 package com.ecommerce.yourcart;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,11 @@ public class MyCartFragment extends Fragment {
     }
 
     private RecyclerView cartItemRecyclerView;
+    private TextView cartTotalAmount;
     private Button cartContinueButton;
+    private Dialog loadingDialog;
+    public static CartAdapter cartAdapter;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -65,33 +72,46 @@ public class MyCartFragment extends Fragment {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_cart, container, false);
 
+        ////Loading Dialog
+        loadingDialog = new Dialog(getContext());
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        loadingDialog.show();
+        ////Loading Dialog
+
         cartItemRecyclerView = view.findViewById(R.id.cart_items_recycler_view);
+        cartTotalAmount = view.findViewById(R.id.total_cart_amount);
         cartContinueButton = view.findViewById(R.id.cart_continue_button);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         cartItemRecyclerView.setLayoutManager(layoutManager);
-        List<CartItemModal> cartItemModalList = new ArrayList<>();
-        cartItemModalList.add(new CartItemModal(0, R.mipmap.product1, "Product Title Here", 2, "Rs. 49,999/-", "Rs. 59,999/-", 1, 0, 0));
-        cartItemModalList.add(new CartItemModal(0, R.mipmap.product2, "Product Title Here", 0, "Rs. 49,999/-", "Rs. 59,999/-", 1, 1, 0));
-        cartItemModalList.add(new CartItemModal(0, R.mipmap.product1, "Product Title Here", 2, "Rs. 49,999/-", "Rs. 59,999/-", 1, 0, 0));
-        cartItemModalList.add(new CartItemModal(1, "3", "Rs. 1,49,999/-", "Free", "Rs. 1,49,999/-", "29,999"));
 
-        CartAdapter cartAdapter = new CartAdapter(cartItemModalList);
+        if (DataBaseQueries.cartItemModalList.size() == 0) {
+            DataBaseQueries.cartlist.clear();
+            DataBaseQueries.loadCartList(getContext(), loadingDialog, true, new TextView(getContext()));
+        } else {
+            loadingDialog.dismiss();
+        }
+
+        cartAdapter = new CartAdapter(DataBaseQueries.cartItemModalList, cartTotalAmount, true);
         cartItemRecyclerView.setAdapter(cartAdapter);
         cartAdapter.notifyDataSetChanged();
 
         cartContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent deliveryIntent = new Intent(getContext(), AddAddressActivity.class);
-                getContext().startActivity(deliveryIntent);
+                loadingDialog.show();
+                DataBaseQueries.loadAddresses(getContext(), loadingDialog);
             }
         });
 

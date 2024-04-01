@@ -8,4 +8,5 @@
     <color name="successGreen">#727811</color>
     <color name="colorDanger">#ff0000</color>
     <color name="colorGrey">#D5D5D5</color>
+    <color name="baseGrey">#9F9F9F</color>
 </resources>

@@ -73,10 +73,10 @@ public class MyOrdersFragment extends Fragment {
         myOrdersRecyclerView.setLayoutManager(layoutManager);
 
         List<MyOrderItemModal> myOrderItemModalList = new ArrayList<>();
-        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.product1, 4, "Product Title Here", "Delivered on Sun, 03 Mar, 2024"));
-        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.product2, 5, "Product Title Here", "Cancelled"));
-        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.product3, 3, "Product Title Here", "Cancelled"));
-        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.product1, 4, "Product Title Here", "Delivered on Mon, 04 Mar, 2024"));
+        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.productplaceholder, 4, "Product Title Here", "Delivered on Sun, 03 Mar, 2024"));
+        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.productplaceholder, 5, "Product Title Here", "Cancelled"));
+        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.productplaceholder, 3, "Product Title Here", "Cancelled"));
+        myOrderItemModalList.add(new MyOrderItemModal(R.mipmap.productplaceholder, 4, "Product Title Here", "Delivered on Mon, 04 Mar, 2024"));
 
         MyOrderAdapter myOrderAdapter = new MyOrderAdapter(myOrderItemModalList);
         myOrdersRecyclerView.setAdapter(myOrderAdapter);

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,13 @@ import java.util.List;
 public class DeliveryActivity extends AppCompatActivity {
 
     private RecyclerView deliveryRecyclerView;
-    private Button changeOrAddNewAddressButton;
     public static final int SELECT_ADDRESS = 0;
+
+    private TextView fullName;
+    private TextView fullAddress;
+    private TextView pincode;
+    private Button changeOrAddNewAddressButton;
+    private TextView cartTotalAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +37,17 @@ public class DeliveryActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Delivery");
 
         deliveryRecyclerView = findViewById(R.id.delivery_recycler_view);
+        fullName = findViewById(R.id.shipping_details_full_name);
+        fullAddress = findViewById(R.id.shipping_details_full_address);
+        pincode = findViewById(R.id.shipping_details_pincode);
         changeOrAddNewAddressButton = findViewById(R.id.change_or_add_address_button);
+        cartTotalAmount = findViewById(R.id.total_cart_amount);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         deliveryRecyclerView.setLayoutManager(layoutManager);
-        List<CartItemModal> cartItemModalList = new ArrayList<>();
-        cartItemModalList.add(new CartItemModal(0, R.mipmap.product1, "Product Title Here", 2, "Rs. 49,999/-", "Rs. 59,999/-", 1, 0, 0));
-        cartItemModalList.add(new CartItemModal(0, R.mipmap.product2, "Product Title Here", 0, "Rs. 49,999/-", "Rs. 59,999/-", 1, 1, 0));
-        cartItemModalList.add(new CartItemModal(0, R.mipmap.product1, "Product Title Here", 2, "Rs. 49,999/-", "Rs. 59,999/-", 1, 0, 0));
-        cartItemModalList.add(new CartItemModal(1, "3", "Rs. 1,49,999/-", "Free", "Rs. 1,49,999/-", "29,999"));
 
-        CartAdapter cartAdapter = new CartAdapter(cartItemModalList);
+        CartAdapter cartAdapter = new CartAdapter(DataBaseQueries.cartItemModalList, cartTotalAmount, false);
         deliveryRecyclerView.setAdapter(cartAdapter);
         cartAdapter.notifyDataSetChanged();
 
@@ -56,6 +61,10 @@ public class DeliveryActivity extends AppCompatActivity {
                 startActivity(myAddressesIntent);
             }
         });
+
+        fullName.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressFullname());
+        fullAddress.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddress());
+        pincode.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getPincode());
     }
 
     @Override

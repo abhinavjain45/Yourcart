@@ -19,6 +19,7 @@ import java.util.List;
 public class CategoryActivity extends AppCompatActivity {
 
     private RecyclerView categoryRecyclerView;
+    private List<HomePageModal> homePageModalPlaceholderList = new ArrayList<>();
     private HomePageAdapter adapter;
 
     @Override
@@ -27,6 +28,26 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        List<SliderModel> sliderModelPlaceholderList = new ArrayList<>();
+        sliderModelPlaceholderList.add(new SliderModel("null", "#FFFFFF"));
+        sliderModelPlaceholderList.add(new SliderModel("null", "#FFFFFF"));
+        sliderModelPlaceholderList.add(new SliderModel("null", "#FFFFFF"));
+        sliderModelPlaceholderList.add(new SliderModel("null", "#FFFFFF"));
+
+        List<HorizontalProductScrollModal> horizontalProductScrollModalPlaceholderList = new ArrayList<>();
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+        horizontalProductScrollModalPlaceholderList.add(new HorizontalProductScrollModal("", "", "", "", ""));
+
+        homePageModalPlaceholderList.add(new HomePageModal(0, sliderModelPlaceholderList));
+        homePageModalPlaceholderList.add(new HomePageModal(1, "", "#FFFFFF"));
+        homePageModalPlaceholderList.add(new HomePageModal(2, "", horizontalProductScrollModalPlaceholderList, new ArrayList<WishlistModal>()));
+        homePageModalPlaceholderList.add(new HomePageModal(3, "", horizontalProductScrollModalPlaceholderList));
 
         String title = getIntent().getStringExtra("CategoryName");
         getSupportActionBar().setTitle(title);
@@ -39,6 +60,8 @@ public class CategoryActivity extends AppCompatActivity {
         testingLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         categoryRecyclerView.setLayoutManager(testingLayoutManager);
 
+        adapter = new HomePageAdapter(homePageModalPlaceholderList);
+
         int listPosition = 0;
         for (int x = 0; x < loadedCategoriesNames.size(); x++) {
             if (loadedCategoriesNames.get(x).equals(title.toUpperCase())) {
@@ -49,7 +72,6 @@ public class CategoryActivity extends AppCompatActivity {
         if (listPosition == 0) {
             loadedCategoriesNames.add(title.toUpperCase());
             listHomePageModalList.add(new ArrayList<HomePageModal>());
-            adapter = new HomePageAdapter(listHomePageModalList.get(loadedCategoriesNames.size() - 1));
             loadFragmentData(categoryRecyclerView, this, loadedCategoriesNames.size() - 1, title);
         } else {
             adapter = new HomePageAdapter(listHomePageModalList.get(listPosition));

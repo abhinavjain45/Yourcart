@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/product2" />
+        app:srcCompat="@mipmap/productplaceholder" />
 
     <TextView
         android:id="@+id/wishlist_product_title"

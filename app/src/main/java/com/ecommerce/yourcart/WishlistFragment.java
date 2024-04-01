@@ -1,5 +1,6 @@
 package com.ecommerce.yourcart;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -34,6 +35,8 @@ public class WishlistFragment extends Fragment {
     }
 
     private RecyclerView wishlistRecyclerView;
+    private Dialog loadingDialog;
+    public static WishlistAdapter wishlistAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -68,14 +71,28 @@ public class WishlistFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_wishlist, container, false);
 
+        ////Loading Dialog
+        loadingDialog = new Dialog(getContext());
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        loadingDialog.show();
+        ////Loading Dialog
+
         wishlistRecyclerView = view.findViewById(R.id.wishlist_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         wishlistRecyclerView.setLayoutManager(linearLayoutManager);
 
-        List<WishlistModal> wishlistModalList = new ArrayList<>();
+        if (DataBaseQueries.wishlistModalList.size() == 0) {
+            DataBaseQueries.wishlist.clear();
+            DataBaseQueries.loadWishlistData(getContext(), loadingDialog, true);
+        } else {
+            loadingDialog.dismiss();
+        }
 
-        WishlistAdapter wishlistAdapter = new WishlistAdapter(wishlistModalList, true);
+        wishlistAdapter = new WishlistAdapter(DataBaseQueries.wishlistModalList, true);
         wishlistRecyclerView.setAdapter(wishlistAdapter);
         wishlistAdapter.notifyDataSetChanged();
 

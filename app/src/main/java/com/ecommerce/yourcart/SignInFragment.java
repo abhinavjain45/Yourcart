@@ -63,6 +63,7 @@ public class SignInFragment extends Fragment {
     private Button signInBtn;
 
     private String emailPattern = "[1-zA-Z0-9._-]+@[a-z]+.[a-z]+";
+    public static Boolean disableCloseButton = false;
 
     private FirebaseAuth firebaseAuth;
 
@@ -109,6 +110,12 @@ public class SignInFragment extends Fragment {
         signInBtn = view.findViewById(R.id.sign_in_submitBtn);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        if (disableCloseButton) {
+            closeBtn.setVisibility(View.GONE);
+        } else {
+            closeBtn.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -233,8 +240,12 @@ public class SignInFragment extends Fragment {
         }
     }
     private void mainIntent() {
-        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
-        startActivity(mainIntent);
+        if (disableCloseButton) {
+            disableCloseButton = false;
+        } else {
+            Intent mainIntent = new Intent(getActivity(), MainActivity.class);
+            startActivity(mainIntent);
+        }
         getActivity().finish();
     }
 }

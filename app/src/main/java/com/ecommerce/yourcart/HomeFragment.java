@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment {
     private List<HomePageModal> homePageModalPlaceholderList = new ArrayList<>();
     private HomePageAdapter adapter;
     private ImageView noInternetImage;
+    private Button connectionRetryButton;
     private ConnectivityManager connectivityManager;
     private NetworkInfo networkInfo;
 
@@ -110,8 +111,11 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_layout_refresh_main);
         noInternetImage = view.findViewById(R.id.no_internet_indicator);
+        connectionRetryButton = view.findViewById(R.id.connection_retry_button);
         categoryRecyclerView = view.findViewById(R.id.category_recycler_view);
         homePageRecyclerView = view.findViewById(R.id.home_page_recycler_view);
+
+        swipeRefreshLayout.setColorSchemeColors(getContext().getResources().getColor(R.color.primary), getContext().getResources().getColor(R.color.primary), getContext().getResources().getColor(R.color.primary));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -122,15 +126,15 @@ public class HomeFragment extends Fragment {
         homePageRecyclerView.setLayoutManager(testingLayoutManager);
 
         categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
-        categoryModalPlaceholderList.add(new CategoryModal("null", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
+        categoryModalPlaceholderList.add(new CategoryModal("", ""));
 
         List<SliderModel> sliderModelPlaceholderList = new ArrayList<>();
         sliderModelPlaceholderList.add(new SliderModel("null", "#FFFFFF"));
@@ -153,22 +157,25 @@ public class HomeFragment extends Fragment {
         homePageModalPlaceholderList.add(new HomePageModal(3, "", horizontalProductScrollModalPlaceholderList));
 
         categoryAdapter = new CategoryAdapter(categoryModalPlaceholderList);
-        categoryRecyclerView.setAdapter(categoryAdapter);
 
         adapter = new HomePageAdapter(homePageModalPlaceholderList);
-        homePageRecyclerView.setAdapter(adapter);
 
         connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
+            MainActivity.drawer.setDrawerLockMode(0);
             noInternetImage.setVisibility(View.GONE);
-
+            connectionRetryButton.setVisibility(View.GONE);
+            categoryRecyclerView.setVisibility(View.VISIBLE);
+            homePageRecyclerView.setVisibility(View.VISIBLE);
             if (categoryModalList.size() == 0) {
                 loadCategoriesForHomeCategorySlider(categoryRecyclerView, getContext());
             } else {
+                categoryAdapter = new CategoryAdapter(categoryModalList);
                 categoryAdapter.notifyDataSetChanged();
             }
+            categoryRecyclerView.setAdapter(categoryAdapter);
 
             if (listHomePageModalList.size() == 0) {
                 loadedCategoriesNames.add("HOME");
@@ -178,9 +185,15 @@ public class HomeFragment extends Fragment {
                 adapter = new HomePageAdapter(listHomePageModalList.get(0));
                 adapter.notifyDataSetChanged();
             }
+            homePageRecyclerView.setAdapter(adapter);
+
         } else {
+            MainActivity.drawer.setDrawerLockMode(1);
+            categoryRecyclerView.setVisibility(View.GONE);
+            homePageRecyclerView.setVisibility(View.GONE);
             Glide.with(this).load(R.mipmap.nointernetindicator).into(noInternetImage);
             noInternetImage.setVisibility(View.VISIBLE);
+            connectionRetryButton.setVisibility(View.VISIBLE);
         }
 
         ////// Refresh Layout
@@ -188,29 +201,53 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-
-                categoryModalList.clear();
-                listHomePageModalList.clear();
-                loadedCategoriesNames.clear();
-
-                if (networkInfo != null && networkInfo.isConnected() == true) {
-                    noInternetImage.setVisibility(View.GONE);
-
-                    categoryRecyclerView.setAdapter(categoryAdapter);
-                    homePageRecyclerView.setAdapter(adapter);
-
-                    loadCategoriesForHomeCategorySlider(categoryRecyclerView, getContext());
-                    loadedCategoriesNames.add("HOME");
-                    listHomePageModalList.add(new ArrayList<HomePageModal>());
-                    loadFragmentData(homePageRecyclerView, getContext(), 0, "home");
-
-                } else {
-                    Glide.with(getContext()).load(R.mipmap.nointernetindicator).into(noInternetImage);
-                    noInternetImage.setVisibility(View.VISIBLE);
-                }
+                reloadPage();
             }
         });
         ////// Refresh Layout
+
+        connectionRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadPage();
+            }
+        });
+
         return view;
+    }
+
+    private void reloadPage() {
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+        categoryModalList.clear();
+        listHomePageModalList.clear();
+        loadedCategoriesNames.clear();
+
+        if (networkInfo != null && networkInfo.isConnected() == true) {
+            MainActivity.drawer.setDrawerLockMode(0);
+            noInternetImage.setVisibility(View.GONE);
+            connectionRetryButton.setVisibility(View.GONE);
+            categoryRecyclerView.setVisibility(View.VISIBLE);
+            homePageRecyclerView.setVisibility(View.VISIBLE);
+
+            categoryAdapter = new CategoryAdapter(categoryModalPlaceholderList);
+            adapter = new HomePageAdapter(homePageModalPlaceholderList);
+            categoryRecyclerView.setAdapter(categoryAdapter);
+            homePageRecyclerView.setAdapter(adapter);
+
+            loadCategoriesForHomeCategorySlider(categoryRecyclerView, getContext());
+            loadedCategoriesNames.add("HOME");
+            listHomePageModalList.add(new ArrayList<HomePageModal>());
+            loadFragmentData(homePageRecyclerView, getContext(), 0, "home");
+
+        } else {
+            MainActivity.drawer.setDrawerLockMode(1);
+            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            categoryRecyclerView.setVisibility(View.GONE);
+            homePageRecyclerView.setVisibility(View.GONE);
+            Glide.with(getContext()).load(R.mipmap.nointernetindicator).into(noInternetImage);
+            noInternetImage.setVisibility(View.VISIBLE);
+            connectionRetryButton.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
