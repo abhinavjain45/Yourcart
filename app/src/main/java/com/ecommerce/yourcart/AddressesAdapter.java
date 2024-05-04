@@ -4,6 +4,7 @@ import static com.ecommerce.yourcart.DeliveryActivity.SELECT_ADDRESS;
 import static com.ecommerce.yourcart.MyAccountFragment.MANAGE_ADDRESS;
 import static com.ecommerce.yourcart.MyAddressesActivity.refreshItem;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,11 +39,13 @@ public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.View
     @Override
     public void onBindViewHolder(@NonNull AddressesAdapter.ViewHolder holder, int position) {
         String userFullName = addressesModalList.get(position).getAddressFullname();
+        String userMobileNumber = addressesModalList.get(position).getAddressMobileNumber();
+        String userAlternateMobileNumber = addressesModalList.get(position).getAddressAlternateMobileNumber();
         String userFullAddress = addressesModalList.get(position).getAddress();
         String userPincode = addressesModalList.get(position).getPincode();
         Boolean selectedAddress = addressesModalList.get(position).getSelectedAddress();
 
-        holder.setAddressData(userFullName, userFullAddress, userPincode, selectedAddress, position);
+        holder.setAddressData(userFullName, userMobileNumber, userAlternateMobileNumber, userFullAddress, userPincode, selectedAddress, position);
 
     }
 
@@ -69,8 +72,12 @@ public class AddressesAdapter extends RecyclerView.Adapter<AddressesAdapter.View
             addressesOptionContainer = itemView.findViewById(R.id.addresses_option_container);
         }
 
-        private void setAddressData(String userFullName, String userFullAddress, String userPincode, Boolean selectedAddress, int position) {
-            fullName.setText(userFullName);
+        private void setAddressData(String userFullName, String userMobileNumber, String userAlternateMobileNumber, String userFullAddress, String userPincode, Boolean selectedAddress, int position) {
+            if (TextUtils.isEmpty(userAlternateMobileNumber)) {
+                fullName.setText(userFullName + " - " + userMobileNumber);
+            } else {
+                fullName.setText(userFullName + " - " + userMobileNumber + " or " + userAlternateMobileNumber);
+            }
             address.setText(userFullAddress);
             pincode.setText(userPincode);
 

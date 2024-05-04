@@ -512,6 +512,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 if (currentUser == null) {
                     signInDialog.show();
                 } else {
+                    DeliveryActivity.fromCart = false;
                     loadingDialog.show();
                     productDetailsActivity = ProductDetailsActivity.this;
                     DeliveryActivity.cartItemModalList = new ArrayList<>();

@@ -114,14 +114,16 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             if (inStock) {
                 wishlistProductPrice.setText("Rs. "+displayPrice+"/-");
                 wishlistCuttedPrice.setText("Rs. "+displayCuttedPrice+"/-");
+                if (paymentMethod) {
+                    paymentMethodAvailable.setVisibility(View.VISIBLE);
+                } else {
+                    paymentMethodAvailable.setVisibility(View.GONE);
+                }
             } else {
                 wishlistProductPrice.setText("Out of Stock");
                 wishlistProductPrice.setTextColor(itemView.getContext().getResources().getColor(R.color.colorDanger));
-                wishlistCuttedPrice.setVisibility(View.INVISIBLE);
-            }
-            if (paymentMethod) {
-                paymentMethodAvailable.setVisibility(View.VISIBLE);
-            } else {
+                wishlistCuttedPrice.setVisibility(View.GONE);
+                wishlistPriceCutDivider.setVisibility(View.GONE);
                 paymentMethodAvailable.setVisibility(View.GONE);
             }
 

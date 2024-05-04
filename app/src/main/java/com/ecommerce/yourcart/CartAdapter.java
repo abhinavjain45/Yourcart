@@ -92,6 +92,9 @@ public class CartAdapter extends RecyclerView.Adapter {
                 if (totalPrice > 1999) {
                     delivery = "FREE";
                     grandTotal = totalPrice;
+                } else if (totalPrice <= 0) {
+                    delivery = "0";
+                    grandTotal = totalPrice;
                 } else {
                     delivery = "89";
                     grandTotal = totalPrice + 89;

@@ -103,20 +103,25 @@ public class AddAddressActivity extends AppCompatActivity {
                                         loadingDialog.show();
                                         final String fullAddress;
                                         final String fullName;
+
+                                        fullName = customerName.getText().toString();
+
+                                        Map<String, Object> addAddress = new HashMap<>();
+                                        addAddress.put("listSize", (long) DataBaseQueries.addressesModalList.size() + 1);
+                                        addAddress.put("fullName" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), fullName);
+                                        addAddress.put("mobileNumber" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), mobileNumber.getText().toString());
+                                        if (!TextUtils.isEmpty(alternateMobileNumber.getText())) {
+                                            addAddress.put("alternateMobileNumber" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), alternateMobileNumber.getText().toString());
+                                        } else {
+                                            addAddress.put("alternateMobileNumber" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), "");
+                                        }
+
                                         if (!TextUtils.isEmpty(landmark.getText())) {
                                             fullAddress = flatNumber.getText().toString() + ", " + locality.getText().toString() + ", " + landmark.getText().toString() + ", " + city.getText().toString() + ", " + selectedState;
                                         } else {
                                             fullAddress = flatNumber.getText().toString() + ", " + locality.getText().toString() + ", " + city.getText().toString() + ", " + selectedState;
                                         }
-                                        if (!TextUtils.isEmpty(alternateMobileNumber.getText())) {
-                                            fullName = customerName.getText().toString() + " - " + mobileNumber.getText().toString() + " or " + alternateMobileNumber.getText().toString();
-                                        } else {
-                                            fullName = customerName.getText().toString() + " - " + mobileNumber.getText().toString();
-                                        }
 
-                                        Map<String, Object> addAddress = new HashMap<>();
-                                        addAddress.put("listSize", (long) DataBaseQueries.addressesModalList.size() + 1);
-                                        addAddress.put("fullName" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), fullName);
                                         addAddress.put("address" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), fullAddress);
                                         addAddress.put("pincode" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), pincode.getText().toString());
                                         addAddress.put("selected" + String.valueOf((long) DataBaseQueries.addressesModalList.size() + 1), true);
@@ -132,7 +137,7 @@ public class AddAddressActivity extends AppCompatActivity {
                                                             if (DataBaseQueries.addressesModalList.size() > 0) {
                                                                 DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).setSelectedAddress(false);
                                                             }
-                                                            DataBaseQueries.addressesModalList.add(new AddressesModal(fullName, fullAddress, pincode.getText().toString(), true));
+                                                            DataBaseQueries.addressesModalList.add(new AddressesModal(fullName, mobileNumber.getText().toString(), alternateMobileNumber.getText().toString(), fullAddress, pincode.getText().toString(), true));
 
                                                             if (getIntent().getStringExtra("INTENT").equals("deliveryIntent")) {
                                                                 Intent deliveryIntent = new Intent(AddAddressActivity.this, DeliveryActivity.class);

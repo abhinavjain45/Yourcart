@@ -257,7 +257,8 @@ public class DataBaseQueries {
         cartlist.clear();
         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("CART_DATA")
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             for (long x = 0; x < (long) task.getResult().get("listSize"); x++) {
                                 cartlist.add(task.getResult().get("productID"+x).toString());
@@ -381,6 +382,8 @@ public class DataBaseQueries {
                             } else {
                                 for (long x = 1; x < (long) task.getResult().get("listSize") + 1; x++) {
                                     addressesModalList.add(new AddressesModal(task.getResult().get("fullName"+x).toString(),
+                                            task.getResult().get("mobileNumber"+x).toString(),
+                                            task.getResult().get("alternateMobileNumber"+x).toString(),
                                             task.getResult().get("address"+x).toString(),
                                             task.getResult().get("pincode"+x).toString(),
                                             (boolean) task.getResult().get("selected"+x)));
@@ -409,5 +412,8 @@ public class DataBaseQueries {
         wishlistModalList.clear();
         cartlist.clear();
         cartItemModalList.clear();
+        ratedProductIDs.clear();
+        ratings.clear();
+        addressesModalList.clear();
     }
 }

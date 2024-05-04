@@ -2,6 +2,7 @@ package com.ecommerce.yourcart;
 
 import static androidx.fragment.app.FragmentManager.TAG;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,25 +23,33 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class DeliveryActivity extends AppCompatActivity implements PaymentResultListener {
 
     private RecyclerView deliveryRecyclerView;
     private Boolean successResponse = false;
+    public static boolean fromCart;
+    public static boolean codOrderConfirmed = false;
     public static final int SELECT_ADDRESS = 0;
 
     ///// Order Confirmation
     private ConstraintLayout orderConfirmationLayout;
     private TextView orderIDTextView;
-    private String orderID = UUID.randomUUID().toString().substring(0, 12);
+    private String orderID;
     private ImageButton continueShoppingButton;
     ///// Order Confirmation
 
@@ -56,6 +65,7 @@ public class DeliveryActivity extends AppCompatActivity implements PaymentResult
     private Dialog loadingDialog;
     private Dialog paymentMethodDialog;
     private ImageButton razorpayButton;
+    private ImageButton codButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +84,8 @@ public class DeliveryActivity extends AppCompatActivity implements PaymentResult
         changeOrAddNewAddressButton = findViewById(R.id.change_or_add_address_button);
         cartTotalAmount = findViewById(R.id.total_cart_amount);
         deliveryContinueButton = findViewById(R.id.cart_continue_button);
+
+        orderID = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 12);
 
         ////Loading Dialog
         loadingDialog = new Dialog(DeliveryActivity.this);
@@ -133,6 +145,17 @@ public class DeliveryActivity extends AppCompatActivity implements PaymentResult
             }
         });
 
+        codButton = paymentMethodDialog.findViewById(R.id.cod_button);
+        codButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paymentMethodDialog.dismiss();
+                Intent otpVerificationIntent = new Intent(DeliveryActivity.this, OTPVerificationActivity.class);
+                otpVerificationIntent.putExtra("mobileNumber", DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressMobileNumber());
+                startActivity(otpVerificationIntent);
+            }
+        });
+
     }
 
     public void startPayment() {
@@ -170,9 +193,17 @@ public class DeliveryActivity extends AppCompatActivity implements PaymentResult
     @Override
     protected void onStart() {
         super.onStart();
-        fullName.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressFullname());
+        if (DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressAlternateMobileNumber() == "") {
+            fullName.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressFullname() + " - " + DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressMobileNumber());
+        } else {
+            fullName.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressFullname() + " - " + DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressMobileNumber() + " or " + DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddressAlternateMobileNumber());
+        }
         fullAddress.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getAddress());
         pincode.setText(DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).getPincode());
+
+        if (codOrderConfirmed) {
+            showConfirmationLayout();
+        }
     }
 
     @Override
@@ -187,29 +218,7 @@ public class DeliveryActivity extends AppCompatActivity implements PaymentResult
 
     @Override
     public void onPaymentSuccess(String s) {
-//        Toast.makeText(this, "Payment Successful! " + s, Toast.LENGTH_SHORT).show();
-
-        successResponse = true;
-
-        if (MainActivity.mainActivity != null){
-            MainActivity.mainActivity.finish();
-            MainActivity.mainActivity = null;
-            MainActivity.showCart = false;
-        }
-
-        if (ProductDetailsActivity.productDetailsActivity != null){
-            ProductDetailsActivity.productDetailsActivity.finish();
-            ProductDetailsActivity.productDetailsActivity = null;
-        }
-
-        orderIDTextView.setText("Order ID: " + orderID);
-        orderConfirmationLayout.setVisibility(View.VISIBLE);
-        continueShoppingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        showConfirmationLayout();
     }
 
     @Override
@@ -224,5 +233,68 @@ public class DeliveryActivity extends AppCompatActivity implements PaymentResult
             return;
         }
         super.onBackPressed();
+    }
+
+    private void showConfirmationLayout() {
+        successResponse = true;
+        codOrderConfirmed = false;
+
+        if (MainActivity.mainActivity != null){
+            MainActivity.mainActivity.finish();
+            MainActivity.mainActivity = null;
+            MainActivity.showCart = false;
+        }
+
+        if (ProductDetailsActivity.productDetailsActivity != null){
+            ProductDetailsActivity.productDetailsActivity.finish();
+            ProductDetailsActivity.productDetailsActivity = null;
+        }
+
+        if (fromCart) {
+            loadingDialog.show();
+            Map<String, Object> updateCartlist = new HashMap<>();
+            long cartListSize = 0;
+            final List<Integer> indexList = new ArrayList<>();
+
+            for (int x = 0; x < DataBaseQueries.cartlist.size(); x++) {
+                if (!cartItemModalList.get(x).isInStock()) {
+                    updateCartlist.put("productID"+cartListSize, cartItemModalList.get(x).getProductID());
+                    cartListSize++;
+                } else {
+                    indexList.add(x);
+                }
+            }
+            updateCartlist.put("listSize", cartListSize);
+
+            FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("CART_DATA")
+                    .set(updateCartlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                for (int x = 0; x < indexList.size(); x++) {
+                                    DataBaseQueries.cartlist.remove(indexList.get(x).intValue());
+                                    DataBaseQueries.cartItemModalList.remove(indexList.get(x).intValue());
+                                    DataBaseQueries.cartItemModalList.remove(DataBaseQueries.cartItemModalList.size()-1);
+                                }
+                            } else {
+                                String error = task.getException().getMessage();
+                                Toast.makeText(DeliveryActivity.this, error, Toast.LENGTH_SHORT).show();
+                            }
+                            loadingDialog.dismiss();
+                        }
+                    });
+        }
+
+        deliveryContinueButton.setEnabled(false);
+        changeOrAddNewAddressButton.setEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        orderIDTextView.setText("Order ID: " + orderID);
+        orderConfirmationLayout.setVisibility(View.VISIBLE);
+        continueShoppingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }

@@ -99,15 +99,15 @@ public class SignInFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        dontHaveAnAccount = view.findViewById(R.id.tv_dont_have_an_account);
-        forgotPassword =view.findViewById(R.id.sign_in_forgot_password);
+        dontHaveAnAccount = view.findViewById(R.id.bottom_textView);
+        forgotPassword =view.findViewById(R.id.otp_verification_phone_number);
         parentFrameLayout = getActivity().findViewById(R.id.register_frame_layout);
 
-        email = view.findViewById(R.id.sign_in_email);
+        email = view.findViewById(R.id.otp_field);
         password = view.findViewById(R.id.sign_in_password);
         progressBar = view.findViewById(R.id.sign_in_progress_bar);
         closeBtn = view.findViewById(R.id.sign_in_closeBtn);
-        signInBtn = view.findViewById(R.id.sign_in_submitBtn);
+        signInBtn = view.findViewById(R.id.verification_button);
 
         firebaseAuth = FirebaseAuth.getInstance();
 

@@ -97,17 +97,6 @@ public class MyCartFragment extends Fragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         cartItemRecyclerView.setLayoutManager(layoutManager);
 
-        if (DataBaseQueries.cartItemModalList.size() == 0) {
-            DataBaseQueries.cartlist.clear();
-            DataBaseQueries.loadCartList(getContext(), loadingDialog, true, new TextView(getContext()), cartTotalAmount);
-        } else {
-            if (DataBaseQueries.cartItemModalList.get(DataBaseQueries.cartItemModalList.size() - 1).getType() == CartItemModal.CART_TOTAL) {
-                LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
-                parent.setVisibility(View.VISIBLE);
-            }
-            loadingDialog.dismiss();
-        }
-
         cartAdapter = new CartAdapter(DataBaseQueries.cartItemModalList, cartTotalAmount, true);
         cartItemRecyclerView.setAdapter(cartAdapter);
         cartAdapter.notifyDataSetChanged();
@@ -116,6 +105,7 @@ public class MyCartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DeliveryActivity.cartItemModalList = new ArrayList<>();
+                DeliveryActivity.fromCart = true;
 
                 for (int x = 0; x < DataBaseQueries.cartItemModalList.size(); x++) {
                     CartItemModal cartItemModal = DataBaseQueries.cartItemModalList.get(x);
@@ -138,5 +128,21 @@ public class MyCartFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (DataBaseQueries.cartItemModalList.size() == 0) {
+            DataBaseQueries.cartlist.clear();
+            DataBaseQueries.loadCartList(getContext(), loadingDialog, true, new TextView(getContext()), cartTotalAmount);
+        } else {
+            if (DataBaseQueries.cartItemModalList.get(DataBaseQueries.cartItemModalList.size() - 1).getType() == CartItemModal.CART_TOTAL) {
+                LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
+                parent.setVisibility(View.VISIBLE);
+            }
+            loadingDialog.dismiss();
+        }
     }
 }
