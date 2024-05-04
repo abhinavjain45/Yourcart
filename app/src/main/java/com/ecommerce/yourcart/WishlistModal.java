@@ -11,8 +11,9 @@ public class WishlistModal {
     private String wishlistProductPrice;
     private String wishlistCuttedPrice;
     private Boolean availablePaymentMethod;
+    private Boolean productInStock;
 
-    public WishlistModal(String wishlistProductID, String wishlistProductImage, String wishlistProductTitle, long wishlistFreeCouponNumber, String productAverageRating, long productTotalRatings, String wishlistProductPrice, String wishlistCuttedPrice, Boolean availablePaymentMethod) {
+    public WishlistModal(String wishlistProductID, String wishlistProductImage, String wishlistProductTitle, long wishlistFreeCouponNumber, String productAverageRating, long productTotalRatings, String wishlistProductPrice, String wishlistCuttedPrice, Boolean availablePaymentMethod, Boolean productInStock) {
         this.wishlistProductID = wishlistProductID;
         this.wishlistProductImage = wishlistProductImage;
         this.wishlistProductTitle = wishlistProductTitle;
@@ -22,6 +23,7 @@ public class WishlistModal {
         this.wishlistProductPrice = wishlistProductPrice;
         this.wishlistCuttedPrice = wishlistCuttedPrice;
         this.availablePaymentMethod = availablePaymentMethod;
+        this.productInStock = productInStock;
     }
 
     public String getWishlistProductID() {
@@ -94,5 +96,13 @@ public class WishlistModal {
 
     public void setAvailablePaymentMethod(Boolean availablePaymentMethod) {
         this.availablePaymentMethod = availablePaymentMethod;
+    }
+
+    public Boolean getProductInStock() {
+        return productInStock;
+    }
+
+    public void setProductInStock(Boolean productInStock) {
+        this.productInStock = productInStock;
     }
 }

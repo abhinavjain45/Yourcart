@@ -48,8 +48,9 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         String displayPrice = wishlistModalList.get(position).getWishlistProductPrice();
         String displayCuttedPrice = wishlistModalList.get(position).getWishlistCuttedPrice();
         Boolean paymentMethod = wishlistModalList.get(position).getAvailablePaymentMethod();
+        Boolean inStock = wishlistModalList.get(position).getProductInStock();
 
-        holder.setWishlistData(productID, resource, productTitle, freeCouponCount, averageRating, totalRatingNumber, displayPrice, displayCuttedPrice, paymentMethod, position);
+        holder.setWishlistData(productID, resource, productTitle, freeCouponCount, averageRating, totalRatingNumber, displayPrice, displayCuttedPrice, paymentMethod, position, inStock);
 
         if (lastPosition < position) {
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.fade_in);
@@ -93,10 +94,10 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             wishlistItemDeleteButton = itemView.findViewById(R.id.wishlist_delete_button);
         }
 
-        private void setWishlistData(String productID, String resource, String productTitle, long freeCouponCount, String averageRating, long totalRatingNumber, String displayPrice, String displayCuttedPrice, Boolean paymentMethod, int index) {
+        private void setWishlistData(String productID, String resource, String productTitle, long freeCouponCount, String averageRating, long totalRatingNumber, String displayPrice, String displayCuttedPrice, Boolean paymentMethod, int index, Boolean inStock) {
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.mipmap.productplaceholder)).into(wishlistProductImage);
             wishlistProductTitle.setText(productTitle);
-            if (freeCouponCount!= 0) {
+            if (freeCouponCount!= 0 && inStock) {
                 couponIcon.setVisibility(View.VISIBLE);
                 if (freeCouponCount == 1) {
                     freeCouponsNumber.setText("Free " +freeCouponCount+ " Coupon");
@@ -109,8 +110,15 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
             }
             ratingAverage.setText(averageRating);
             totalRatingCount.setText("(" +totalRatingNumber+ ") Ratings");
-            wishlistProductPrice.setText("Rs. "+displayPrice+"/-");
-            wishlistCuttedPrice.setText("Rs. "+displayCuttedPrice+"/-");
+
+            if (inStock) {
+                wishlistProductPrice.setText("Rs. "+displayPrice+"/-");
+                wishlistCuttedPrice.setText("Rs. "+displayCuttedPrice+"/-");
+            } else {
+                wishlistProductPrice.setText("Out of Stock");
+                wishlistProductPrice.setTextColor(itemView.getContext().getResources().getColor(R.color.colorDanger));
+                wishlistCuttedPrice.setVisibility(View.INVISIBLE);
+            }
             if (paymentMethod) {
                 paymentMethodAvailable.setVisibility(View.VISIBLE);
             } else {

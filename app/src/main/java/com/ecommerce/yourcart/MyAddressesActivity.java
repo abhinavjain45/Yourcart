@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,10 +34,11 @@ public class MyAddressesActivity extends AppCompatActivity {
 
     private RecyclerView allAddressesRecyclerView;
     private static AddressesAdapter addressesAdapter;
+    private Dialog loadingDialog;
     private int previousSelectedAddress;
 
-    private TextView addressesCount;
     private LinearLayout addNewAddressButton;
+    private TextView addressesCount;
     private Button deliverHereButton;
 
     @Override
@@ -47,6 +50,14 @@ public class MyAddressesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle("My Addresses");
+
+        ////Loading Dialog
+        loadingDialog = new Dialog(this);
+        loadingDialog.setContentView(R.layout.loading_progress_dialog);
+        loadingDialog.setCancelable(false);
+        loadingDialog.getWindow().setBackgroundDrawable(this.getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ////Loading Dialog
 
         previousSelectedAddress = DataBaseQueries.selectedAddress;
 
@@ -81,22 +92,17 @@ public class MyAddressesActivity extends AppCompatActivity {
             }
         });
 
-        if (DataBaseQueries.addressesModalList.size() == 0) {
-            addressesCount.setText("No Addresses Available");
-        } else if (DataBaseQueries.addressesModalList.size() == 1) {
-            addressesCount.setText(String.valueOf(DataBaseQueries.addressesModalList.size()) + " Saved Address");
-        } else {
-            addressesCount.setText(String.valueOf(DataBaseQueries.addressesModalList.size()) + " Saved Addresses");
-        }
-
         deliverHereButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (DataBaseQueries.selectedAddress != previousSelectedAddress) {
-                    int previousSelectedIndex = previousSelectedAddress;
+                    final int previousSelectedIndex = previousSelectedAddress;
+                    loadingDialog.show();
+
                     Map<String, Object> updateSelectedAddress = new HashMap<>();
                     updateSelectedAddress.put("selected" + String.valueOf(previousSelectedAddress + 1), false);
                     updateSelectedAddress.put("selected" + String.valueOf(DataBaseQueries.selectedAddress + 1), true);
+
                     previousSelectedAddress = DataBaseQueries.selectedAddress;
                     FirebaseFirestore.getInstance().collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("ADDRESSES_DATA")
                             .update(updateSelectedAddress).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -109,12 +115,27 @@ public class MyAddressesActivity extends AppCompatActivity {
                                         String error = task.getException().getMessage();
                                         Toast.makeText(MyAddressesActivity.this, error, Toast.LENGTH_SHORT).show();
                                     }
+                                    loadingDialog.dismiss();
                                 }
                             });
+                } else {
+                    finish();
                 }
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (DataBaseQueries.addressesModalList.size() == 0) {
+            addressesCount.setText("No Addresses Available");
+        } else if (DataBaseQueries.addressesModalList.size() == 1) {
+            addressesCount.setText(String.valueOf(DataBaseQueries.addressesModalList.size()) + " Saved Address");
+        } else {
+            addressesCount.setText(String.valueOf(DataBaseQueries.addressesModalList.size()) + " Saved Addresses");
+        }
     }
 
     public static void refreshItem(int deselectPosition, int selectPosition) {
@@ -126,9 +147,24 @@ public class MyAddressesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
+            if (DataBaseQueries.selectedAddress != previousSelectedAddress) {
+                DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).setSelectedAddress(false);
+                DataBaseQueries.addressesModalList.get(previousSelectedAddress).setSelectedAddress(true);
+                DataBaseQueries.selectedAddress = previousSelectedAddress;
+            }
             finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (DataBaseQueries.selectedAddress != previousSelectedAddress) {
+            DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).setSelectedAddress(false);
+            DataBaseQueries.addressesModalList.get(previousSelectedAddress).setSelectedAddress(true);
+            DataBaseQueries.selectedAddress = previousSelectedAddress;
+        }
+        super.onBackPressed();
     }
 }

@@ -58,7 +58,7 @@ public class AddAddressActivity extends AppCompatActivity {
         loadingDialog = new Dialog(this);
         loadingDialog.setContentView(R.layout.loading_progress_dialog);
         loadingDialog.setCancelable(false);
-        loadingDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.slider_background));
+        loadingDialog.getWindow().setBackgroundDrawable(this.getDrawable(R.drawable.slider_background));
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ////Loading Dialog
 
@@ -133,12 +133,14 @@ public class AddAddressActivity extends AppCompatActivity {
                                                                 DataBaseQueries.addressesModalList.get(DataBaseQueries.selectedAddress).setSelectedAddress(false);
                                                             }
                                                             DataBaseQueries.addressesModalList.add(new AddressesModal(fullName, fullAddress, pincode.getText().toString(), true));
-                                                            DataBaseQueries.selectedAddress = DataBaseQueries.addressesModalList.size() - 1;
 
                                                             if (getIntent().getStringExtra("INTENT").equals("deliveryIntent")) {
                                                                 Intent deliveryIntent = new Intent(AddAddressActivity.this, DeliveryActivity.class);
                                                                 startActivity(deliveryIntent);
+                                                            } else {
+                                                                MyAddressesActivity.refreshItem(DataBaseQueries.selectedAddress, DataBaseQueries.addressesModalList.size() - 1);
                                                             }
+                                                            DataBaseQueries.selectedAddress = DataBaseQueries.addressesModalList.size() - 1;
                                                             finish();
                                                         } else {
                                                             String error = task.getException().getMessage();

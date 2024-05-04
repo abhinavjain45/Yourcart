@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -98,8 +99,12 @@ public class MyCartFragment extends Fragment {
 
         if (DataBaseQueries.cartItemModalList.size() == 0) {
             DataBaseQueries.cartlist.clear();
-            DataBaseQueries.loadCartList(getContext(), loadingDialog, true, new TextView(getContext()));
+            DataBaseQueries.loadCartList(getContext(), loadingDialog, true, new TextView(getContext()), cartTotalAmount);
         } else {
+            if (DataBaseQueries.cartItemModalList.get(DataBaseQueries.cartItemModalList.size() - 1).getType() == CartItemModal.CART_TOTAL) {
+                LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
+                parent.setVisibility(View.VISIBLE);
+            }
             loadingDialog.dismiss();
         }
 
@@ -110,8 +115,25 @@ public class MyCartFragment extends Fragment {
         cartContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DeliveryActivity.cartItemModalList = new ArrayList<>();
+
+                for (int x = 0; x < DataBaseQueries.cartItemModalList.size(); x++) {
+                    CartItemModal cartItemModal = DataBaseQueries.cartItemModalList.get(x);
+                    if (cartItemModal.isInStock()) {
+                        DeliveryActivity.cartItemModalList.add(cartItemModal);
+                    }
+                }
+                DeliveryActivity.cartItemModalList.add(new CartItemModal(CartItemModal.CART_TOTAL));
+
                 loadingDialog.show();
-                DataBaseQueries.loadAddresses(getContext(), loadingDialog);
+
+                if (DataBaseQueries.addressesModalList.size() == 0) {
+                    DataBaseQueries.loadAddresses(getContext(), loadingDialog);
+                } else {
+                    loadingDialog.dismiss();
+                    Intent deliveryIntent = new Intent(getContext(), DeliveryActivity.class);
+                    startActivity(deliveryIntent);
+                }
             }
         });
 

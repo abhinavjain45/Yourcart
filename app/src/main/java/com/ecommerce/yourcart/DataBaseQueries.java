@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,7 +103,8 @@ public class DataBaseQueries {
                                                 (long) documentSnapshot.get("productTotalRatings"+x),
                                                 documentSnapshot.get("productPrice"+x).toString(),
                                                 documentSnapshot.get("productCuttedPrice"+x).toString(),
-                                                (boolean) documentSnapshot.get("codAvailable"+x)));
+                                                (boolean) documentSnapshot.get("codAvailable"+x),
+                                                (boolean) documentSnapshot.get("inStock"+x)));
                                     }
                                     listHomePageModalList.get(index).add(new HomePageModal(2, documentSnapshot.get("layoutTitle").toString(), horizontalProductScrollModalList, viewAllProductModalList));
                                 } else if ((long) documentSnapshot.get("viewType") == 3) {
@@ -164,7 +166,8 @@ public class DataBaseQueries {
                                                                 (long) task.getResult().get("productTotalRatings"),
                                                                 task.getResult().get("productPrice").toString(),
                                                                 task.getResult().get("productCuttedPrice").toString(),
-                                                                (boolean) task.getResult().get("codAvailable")));
+                                                                (boolean) task.getResult().get("codAvailable"),
+                                                                (boolean) task.getResult().get("inStock")));
 
                                                         WishlistFragment.wishlistAdapter.notifyDataSetChanged();
                                                     } else {
@@ -250,7 +253,7 @@ public class DataBaseQueries {
         }
     }
 
-    public static void loadCartList(final Context context, Dialog dialog, final boolean loadProductData, final TextView badgeCount) {
+    public static void loadCartList(final Context context, Dialog dialog, final boolean loadProductData, final TextView badgeCount, final TextView cartTotalAmount) {
         cartlist.clear();
         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("CART_DATA")
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -287,10 +290,13 @@ public class DataBaseQueries {
                                                                 task.getResult().get("productCuttedPrice").toString(),
                                                                 (long) 1,
                                                                 (long) 1,
-                                                                (long) 1));
+                                                                (long) 1,
+                                                                (boolean) task.getResult().get("inStock")));
 
                                                         if (cartlist.size() == 1) {
                                                             cartItemModalList.add(new CartItemModal(CartItemModal.CART_TOTAL));
+//                                                            LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
+//                                                            parent.setVisibility(View.VISIBLE);
                                                         }
                                                         if (cartlist.size() == 0) {
                                                             cartItemModalList.clear();
@@ -325,7 +331,7 @@ public class DataBaseQueries {
                 });
     }
 
-    public static void removeFromCart(int index, final Context context) {
+    public static void removeFromCart(int index, final Context context, final TextView cartTotalAmount) {
         final String removedProductId = cartlist.get(index);
         cartlist.remove(index);
         Map<String, Object> updateCartlist = new HashMap<>();
@@ -346,6 +352,8 @@ public class DataBaseQueries {
                                 MyCartFragment.cartAdapter.notifyDataSetChanged();
                             }
                             if (cartlist.size() == 0) {
+                                LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
+                                parent.setVisibility(View.GONE);
                                 cartItemModalList.clear();
                             }
                             Toast.makeText(context, "Product Removed from Cart!", Toast.LENGTH_SHORT).show();
