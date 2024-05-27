@@ -79,7 +79,6 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:background="@color/buttonPrimary"
-        android:enabled="false"
         android:text="Verify"
         android:textAllCaps="false"
         android:textColor="#50ffffff"
